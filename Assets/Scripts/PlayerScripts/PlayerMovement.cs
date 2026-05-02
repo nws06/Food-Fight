@@ -1,22 +1,23 @@
 using UnityEngine;
 using UnityEngine.InputSystem;
 
+[RequireComponent(typeof(Rigidbody2D))]
 public class PlayerMovement : MonoBehaviour
 {
-    private float baseSpeed;
-    private float speed;
-    private float rotation;
-    private Vector2 movement; 
-    private InputAction moveAction; 
-    private Rigidbody2D rb; 
+    private float _baseSpeed;
+    private float _speed;
+    private float _rotation;
+    private InputAction _movementAction; 
+    private Vector2 _movementDirection; 
+    private Rigidbody2D _rigidBody; 
 
 
 
     void Awake()
     {
         // Set values
-        baseSpeed = 25f;
-        speed = baseSpeed;
+        _baseSpeed = 25f;
+        _speed = _baseSpeed;
     }
 
 
@@ -24,8 +25,8 @@ public class PlayerMovement : MonoBehaviour
     void Start()
     {
         // Gather components 
-        moveAction = InputSystem.actions.FindAction("Move");
-        rb = GetComponent<Rigidbody2D>();
+        _movementAction = InputSystem.actions.FindAction("Move");
+        _rigidBody = GetComponent<Rigidbody2D>();
     }
 
 
@@ -33,21 +34,21 @@ public class PlayerMovement : MonoBehaviour
     void Update()
     {
         // Calculate movement vector based on wasd 
-        Vector2 moveValue = moveAction.ReadValue<Vector2>();  
-        movement = new Vector2(moveValue.x, moveValue.y);
+        Vector2 moveValue = _movementAction.ReadValue<Vector2>();  
+        _movementDirection = new Vector2(moveValue.x, moveValue.y);
         
 
         // Calculate rotation based on mouse position 
         Vector2 mousePos = Camera.main.ScreenToWorldPoint(Mouse.current.position.ReadValue());
-        Vector2 lookDir = mousePos - rb.position;
-        rotation = Mathf.Atan2(lookDir.y, lookDir.x) * Mathf.Rad2Deg - 90f;
+        Vector2 lookDir = mousePos - _rigidBody.position;
+        _rotation = Mathf.Atan2(lookDir.y, lookDir.x) * Mathf.Rad2Deg - 90f;
     }
 
 
 
     void FixedUpdate()
     {
-        rb.linearVelocity = movement * speed;
-        rb.rotation = rotation;
+        _rigidBody.linearVelocity = _movementDirection * _speed;
+        _rigidBody.rotation = _rotation;
     }
 }
