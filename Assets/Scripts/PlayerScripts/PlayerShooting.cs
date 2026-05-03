@@ -1,6 +1,7 @@
 using UnityEngine;
 using UnityEngine.InputSystem;
 using System.Collections;
+using UnityEngine.Pool;
 
 public class PlayerShooting : MonoBehaviour
 {
@@ -13,11 +14,13 @@ public class PlayerShooting : MonoBehaviour
     private float _reloadTime;
     private float _bulletSpeed;
     private float _shotCooldown;
+    private float _bulletLifetime;
     private bool _isReloading;
     private float _lastShotTime;
     private InputAction _shootAction;
     private InputAction _reloadAction;
     private Coroutine _reloadCoroutine;
+    private ObjectPool<GameObject> _bulletPool;
 
 
 
@@ -28,6 +31,7 @@ public class PlayerShooting : MonoBehaviour
         _reloadTime = _baseStats.BaseReloadTime;
         _bulletSpeed = _baseStats.BaseBulletSpeed;
         _shotCooldown = _baseStats.BaseShotCooldown;
+        _bulletLifetime = _baseStats.BaseBulletLifetime;
 
         _currentAmmo = _maxAmmo;
 
@@ -35,6 +39,16 @@ public class PlayerShooting : MonoBehaviour
 
         _shootAction = InputSystem.actions.FindAction("Attack");
         _reloadAction = InputSystem.actions.FindAction("Reload");
+
+        _bulletPool = new ObjectPool<GameObject>(
+            createFunc: CreateBullet,
+            actionOnGet: GetBullet,
+            actionOnRelease: ReleaseBullet,
+            actionOnDestroy: DestroyBullet,
+            collectionCheck: true,   
+            defaultCapacity: 5,
+            maxSize: 10
+        );
     }
 
 
@@ -63,7 +77,7 @@ public class PlayerShooting : MonoBehaviour
         if (_currentAmmo <= 0) 
             _reloadCoroutine = StartCoroutine(Reload());
 
-        print("SHOOT");
+        _bulletPool.Get();
     }
 
 
@@ -84,5 +98,47 @@ public class PlayerShooting : MonoBehaviour
 
         _isReloading = false;
         StopCoroutine(_reloadCoroutine);
+    }
+
+
+
+    GameObject CreateBullet()
+    {
+        GameObject newBullet = Instantiate(_bulletPrefab, _firePoint.position, _firePoint.rotation, transform);
+        newBullet.SetActive(false);
+        return newBullet;
+    }
+
+    void GetBullet(GameObject bullet)
+    {
+        bullet.transform.SetPositionAndRotation(_firePoint.position, _firePoint.rotation);
+        bullet.SetActive(true);
+
+        StartCoroutine(BulletLifetime(bullet));
+    }
+
+    void ReleaseBullet(GameObject bullet)
+    {
+        bullet.SetActive(false); 
+    }
+
+    void DestroyBullet(GameObject bullet)
+    {
+        Destroy(bullet);
+    }
+
+
+
+    IEnumerator BulletLifetime(GameObject bullet)
+    {
+        float elapsedTime = 0f;
+        while (elapsedTime < _bulletLifetime)
+        {
+            elapsedTime += Time.deltaTime;
+
+            yield return null;
+        }
+
+        ReleaseBullet(bullet);
     }
 }
