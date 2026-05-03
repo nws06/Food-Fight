@@ -10,5 +10,12 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: efea067e239efdd4abe5539f8edb6bb4, type: 3}
-  m_Name: PlayerBaseStats
+  m_Name: CornCobBaseStats
   m_EditorClassIdentifier: Assembly-CSharp::PlayerBaseStats
+  _baseMoveSpeed: 25
+  _baseHealth: 3
+  _baseDamage: 1.25
+  _baseReloadTime: 1
+  _baseShotCooldown: 0.25
+  _baseBulletSpeed: 25
+  _baseMaxAmmo: 30

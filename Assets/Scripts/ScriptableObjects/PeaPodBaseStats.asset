@@ -1,0 +1,21 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: efea067e239efdd4abe5539f8edb6bb4, type: 3}
+  m_Name: PeaPodBaseStats
+  m_EditorClassIdentifier: Assembly-CSharp::PlayerBaseStats
+  _baseMoveSpeed: 25
+  _baseHealth: 3
+  _baseDamage: 0.75
+  _baseReloadTime: 0.75
+  _baseShotCooldown: 0.1
+  _baseBulletSpeed: 20
+  _baseMaxAmmo: 20
