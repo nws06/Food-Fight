@@ -7,6 +7,7 @@ public class PlayerShooting : MonoBehaviour
 {
     [SerializeField] private PlayerBaseStats _baseStats;
     [SerializeField] private Transform _firePoint;
+    [SerializeField] private Transform _bulletPoolParent;
     [SerializeField] private GameObject _bulletPrefab;
     private float _damage;
     private int _currentAmmo;
@@ -104,8 +105,9 @@ public class PlayerShooting : MonoBehaviour
 
     GameObject CreateBullet()
     {
-        GameObject newBullet = Instantiate(_bulletPrefab, _firePoint.position, _firePoint.rotation, transform);
+        GameObject newBullet = Instantiate(_bulletPrefab, _firePoint.position, _firePoint.rotation, _bulletPoolParent);
         newBullet.SetActive(false);
+        newBullet.name = "Pooled Bullet";
         return newBullet;
     }
 
