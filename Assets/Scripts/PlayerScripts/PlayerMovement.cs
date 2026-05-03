@@ -2,7 +2,7 @@ using UnityEngine;
 using UnityEngine.InputSystem;
 
 [RequireComponent(typeof(Rigidbody2D))]
-public class PlayerMovement : MonoBehaviour, IPauseableUpdate
+public class PlayerMovement : MonoBehaviour, IPauseableUpdate, IPauseableFixedUpdate
 {
     [SerializeField] private PlayerBaseStats _baseStats;
     private float _speed;
@@ -20,7 +20,10 @@ public class PlayerMovement : MonoBehaviour, IPauseableUpdate
 
     void OnEnable()
     {
-        UpdateManager.Instance.Register(this);
+        UpdateManager.Instance.RegisterForUpdate(this);
+        UpdateManager.Instance.RegisterForFixedUpdate(this);
+
+        PauseManager.OnGamePause += OnGamePause;
     }
 
 
@@ -49,16 +52,26 @@ public class PlayerMovement : MonoBehaviour, IPauseableUpdate
 
 
 
-    void FixedUpdate()
+    public void OnPauseableFixedUpdate(float deltaTime)
     {
-        _rigidBody.linearVelocity = _movementDirection * _speed;
+        _rigidBody.linearVelocity = _speed * _movementDirection;
         _rigidBody.rotation = _rotation;
+    }
+
+
+
+    void OnGamePause()
+    {
+        _rigidBody.linearVelocity = Vector2.zero;
     }
 
 
 
     void OnDisable()
     {
-        UpdateManager.Instance.Unregister(this);
+        UpdateManager.Instance.UnregisterFromUpdate(this);
+        UpdateManager.Instance.UnregisterFromFixedUpdate(this);
+
+        PauseManager.OnGamePause -= OnGamePause;
     }
 }
