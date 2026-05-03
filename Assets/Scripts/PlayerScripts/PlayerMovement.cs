@@ -2,7 +2,7 @@ using UnityEngine;
 using UnityEngine.InputSystem;
 
 [RequireComponent(typeof(Rigidbody2D))]
-public class PlayerMovement : MonoBehaviour
+public class PlayerMovement : MonoBehaviour, IPauseableUpdate
 {
     [SerializeField] private PlayerBaseStats _baseStats;
     private float _speed;
@@ -15,8 +15,12 @@ public class PlayerMovement : MonoBehaviour
 
     void Awake()
     {
-        // Set values
         _speed = _baseStats.BaseMoveSpeed;
+    }
+
+    void OnEnable()
+    {
+        UpdateManager.Instance.Register(this);
     }
 
 
@@ -30,7 +34,7 @@ public class PlayerMovement : MonoBehaviour
 
 
 
-    void Update()
+    public void OnPauseableUpdate(float deltaTime)
     {
         // Calculate movement vector based on wasd 
         Vector2 moveValue = _movementAction.ReadValue<Vector2>();  
@@ -49,5 +53,12 @@ public class PlayerMovement : MonoBehaviour
     {
         _rigidBody.linearVelocity = _movementDirection * _speed;
         _rigidBody.rotation = _rotation;
+    }
+
+
+
+    void OnDisable()
+    {
+        UpdateManager.Instance.Unregister(this);
     }
 }
