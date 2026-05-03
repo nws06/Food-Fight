@@ -1,4 +1,4 @@
 public interface IPauseableUpdate
 {
-    void OnPauseableUpdate();
+    void OnPauseableUpdate(float deltaTime);
 }
