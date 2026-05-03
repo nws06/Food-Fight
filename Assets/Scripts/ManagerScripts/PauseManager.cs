@@ -1,9 +1,14 @@
 using UnityEngine;
+using UnityEngine.InputSystem;
 
 public class PauseManager : MonoBehaviour
 {
     public static PauseManager Instance;
-    public static bool isPaused;
+    public static bool isPaused = false;
+
+    private InputAction _pauseAction;
+    private float _pauseCooldown = 0.5f;
+    private float _lastPauseTime = -1f;
 
 
 
@@ -16,7 +21,36 @@ public class PauseManager : MonoBehaviour
         }
         Instance = this;
 
+        _pauseAction = InputSystem.actions.FindAction("Escape");
+    }
+
+
+
+    void Update()
+    {
+        if (_pauseAction.IsPressed() && Utils.IsOffCooldown(_lastPauseTime, _pauseCooldown))
+        {
+            if (!isPaused)
+                PauseGame();
+            else
+                UnpauseGame();
+
+                _lastPauseTime = Time.time;
+        }
+    }
+
+
+
+    void PauseGame()
+    {
+        isPaused = true;
+        print("Pause");
+    }
+
+    void UnpauseGame()
+    {
         isPaused = false;
+        print("Unpause");
     }
 
 
