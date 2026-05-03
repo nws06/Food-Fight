@@ -3,8 +3,7 @@ using UnityEngine;
 public class PauseManager : MonoBehaviour
 {
     public static PauseManager Instance;
-
-    [SerializeField] private bool isPaused;
+    public static bool isPaused;
 
 
 
