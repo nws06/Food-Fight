@@ -17,5 +17,6 @@ MonoBehaviour:
   _baseDamage: 0.75
   _baseReloadTime: 0.75
   _baseShotCooldown: 0.1
-  _baseBulletSpeed: 20
+  _baseBulletSpeed: 80
   _baseMaxAmmo: 20
+  _baseBulletLifetime: 5

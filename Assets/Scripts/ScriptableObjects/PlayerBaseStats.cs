@@ -11,6 +11,7 @@ public class PlayerBaseStats : ScriptableObject
     [SerializeField] private float _baseShotCooldown;
     [SerializeField] private float _baseBulletSpeed;
     [SerializeField] private int _baseMaxAmmo;
+    [SerializeField] private float _baseBulletLifetime;
 
 
 
@@ -22,4 +23,5 @@ public class PlayerBaseStats : ScriptableObject
     public float BaseShotCooldown { get => _baseShotCooldown; }
     public float BaseBulletSpeed { get => _baseBulletSpeed; }
     public int BaseMaxAmmo { get => _baseMaxAmmo; }
+    public float BaseBulletLifetime { get => _baseBulletLifetime; }
 }
