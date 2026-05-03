@@ -47,8 +47,8 @@ public class PlayerShooting : MonoBehaviour, IPauseableUpdate
             actionOnRelease: ReleaseBullet,
             actionOnDestroy: DestroyBullet,
             collectionCheck: true,   
-            defaultCapacity: 5,
-            maxSize: 10
+            defaultCapacity: 60,
+            maxSize: 1080
         );
     }
 
@@ -147,7 +147,7 @@ public class PlayerShooting : MonoBehaviour, IPauseableUpdate
             yield return null;
         }
 
-        ReleaseBullet(bullet);
+        _bulletPool.Release(bullet);
     }
 
 
