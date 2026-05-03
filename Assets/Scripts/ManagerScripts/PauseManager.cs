@@ -1,9 +1,12 @@
+using System;
 using UnityEngine;
 using UnityEngine.InputSystem;
 
 public class PauseManager : MonoBehaviour
 {
     public static PauseManager Instance;
+    public static event Action OnGamePause;
+    public static event Action OnGameUnpause;
     public static bool isPaused = false;
 
     private InputAction _pauseAction;
@@ -45,12 +48,16 @@ public class PauseManager : MonoBehaviour
     {
         isPaused = true;
         print("Pause");
+
+        OnGamePause?.Invoke();
     }
 
     void UnpauseGame()
     {
         isPaused = false;
         print("Unpause");
+        
+        OnGameUnpause?.Invoke();
     }
 
 
