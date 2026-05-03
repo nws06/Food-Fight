@@ -16,7 +16,7 @@ public class PlayerMovement : MonoBehaviour
     void Awake()
     {
         // Set values
-        _speed = _baseStats.BaseHealth;
+        _speed = _baseStats.BaseMoveSpeed;
     }
 
 
