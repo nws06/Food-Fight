@@ -4,7 +4,7 @@ using UnityEngine.InputSystem;
 [RequireComponent(typeof(Rigidbody2D))]
 public class PlayerMovement : MonoBehaviour
 {
-    private PlayerBaseStats _baseStats;
+    [SerializeField] private PlayerBaseStats _baseStats;
     private float _speed;
     private float _rotation;
     private InputAction _movementAction; 
