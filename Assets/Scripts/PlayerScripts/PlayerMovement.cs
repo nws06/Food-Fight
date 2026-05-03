@@ -4,7 +4,7 @@ using UnityEngine.InputSystem;
 [RequireComponent(typeof(Rigidbody2D))]
 public class PlayerMovement : MonoBehaviour
 {
-    private float _baseSpeed;
+    private PlayerBaseStats _baseStats;
     private float _speed;
     private float _rotation;
     private InputAction _movementAction; 
@@ -16,8 +16,7 @@ public class PlayerMovement : MonoBehaviour
     void Awake()
     {
         // Set values
-        _baseSpeed = 25f;
-        _speed = _baseSpeed;
+        _speed = _baseStats.BaseHealth;
     }
 
 
