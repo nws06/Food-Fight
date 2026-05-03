@@ -2,7 +2,7 @@ using System.Collections;
 using UnityEngine;
 
 [RequireComponent(typeof(Rigidbody2D))]
-public class BulletController : MonoBehaviour
+public class BulletController : MonoBehaviour, IPauseableFixedUpdate
 {
     [SerializeField] private PlayerBaseStats _baseStats;
     private float _bulletSpeed;
@@ -17,10 +17,31 @@ public class BulletController : MonoBehaviour
         _rigidbody = GetComponent<Rigidbody2D>();
     }
 
+    void OnEnable()
+    {
+        UpdateManager.Instance.RegisterForFixedUpdate(this);
+
+        PauseManager.OnGamePause += OnGamePause;
+    }
 
 
-    void FixedUpdate()
+
+    public void OnPauseableFixedUpdate(float deltaTime)
     {
         _rigidbody.linearVelocity = transform.up * _bulletSpeed;
+    }
+
+    void OnGamePause()
+    {
+        _rigidbody.linearVelocity = Vector2.zero;
+    }
+
+
+
+    void OnDisable()
+    {
+        UpdateManager.Instance.UnregisterFromFixedUpdate(this);
+
+        PauseManager.OnGamePause -= OnGamePause;
     }
 }
