@@ -3,7 +3,7 @@ using UnityEngine.InputSystem;
 using System.Collections;
 using UnityEngine.Pool;
 
-public class PlayerShooting : MonoBehaviour
+public class PlayerShooting : MonoBehaviour, IPauseableUpdate
 {
     [SerializeField] private PlayerBaseStats _baseStats;
     [SerializeField] private Transform _firePoint;
@@ -52,9 +52,14 @@ public class PlayerShooting : MonoBehaviour
         );
     }
 
+    void OnEnable()
+    {
+        UpdateManager.Instance.RegisterForUpdate(this);
+    }
 
 
-    void Update()
+
+    public void OnPauseableUpdate(float deltaTime)
     {
         if (_shootAction.IsPressed() && !_isReloading && Utils.IsOffCooldown(_lastShotTime, _shotCooldown))
         {
@@ -90,7 +95,8 @@ public class PlayerShooting : MonoBehaviour
         float elapsedTime = 0f;
         while (elapsedTime < _reloadTime)
         {
-            elapsedTime += Time.deltaTime;
+            if (!PauseManager.isPaused)
+                elapsedTime += Time.deltaTime;
 
             yield return null;
         }
@@ -142,5 +148,12 @@ public class PlayerShooting : MonoBehaviour
         }
 
         ReleaseBullet(bullet);
+    }
+
+
+
+    void OnDisable()
+    {
+        UpdateManager.Instance.UnregisterFromUpdate(this);
     }
 }
