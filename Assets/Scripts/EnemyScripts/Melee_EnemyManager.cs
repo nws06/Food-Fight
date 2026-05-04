@@ -4,21 +4,22 @@ using UnityEngine.Pool;
 
 public class Melee_EnemyManager : MonoBehaviour, IPauseableUpdate, IPauseableFixedUpdate
 {
-    public Melee_EnemyController _strawberryPrefab;
-    public Melee_EnemyController _spawningEnemy;
-    public Transform _playerTransform;
-    public ObjectPool<Melee_EnemyController> _enemyPool;
-    public Vector2 _spawnPosition = new Vector2(-50f, 0f);
-    public Quaternion _rotation = Quaternion.identity;
-
-    [SerializeField] private Melee_EnemyBaseStats _strawberryBaseStats;
+    [SerializeField] private Transform _playerTransform;
+    [SerializeField] private Melee_EnemyController _enemyPrefab;
+    [SerializeField] private Melee_EnemyBaseStats _enemyBaseStats;
     [SerializeField] private float _minSpawnTime = 0.1f;
     [SerializeField] private float _maxSpawnTime = 2.0f;
+
     private float _nextSpawnTime = 0f;
+    private Vector3 _spawnPosition = new Vector3(0f, 0f, -10f);
+
     private float _randomXPosition;
     private float _randomYPosition;
-    private Vector2 _faceDirection;
     private Vector3 _randomPosition;
+
+    private Vector2 _faceDirection;
+
+    private ObjectPool<Melee_EnemyController> _enemyPool;
     private List<Melee_EnemyController> _activeEnemies = new List<Melee_EnemyController>();
 
 
@@ -36,14 +37,10 @@ public class Melee_EnemyManager : MonoBehaviour, IPauseableUpdate, IPauseableFix
         );
     }
 
-
-
     void OnEnable()
     {
         PauseManager.OnGamePause += OnGamePause;
     }
-
-
 
     void Start()
     {
@@ -55,20 +52,13 @@ public class Melee_EnemyManager : MonoBehaviour, IPauseableUpdate, IPauseableFix
 
 
 
-    void SpawnEnemy()
-    {
-        _enemyPool.Get();
-    }
-
-
-
     public void OnPauseableUpdate(float deltaTime)
     {
         if (Time.time >= _nextSpawnTime)
         {
             _nextSpawnTime = Time.time + Random.Range(_minSpawnTime, _maxSpawnTime);
 
-            SpawnEnemy();
+            _enemyPool.Get();
         }
     }
 
@@ -91,7 +81,7 @@ public class Melee_EnemyManager : MonoBehaviour, IPauseableUpdate, IPauseableFix
 
     void MoveEnemy(Melee_EnemyController enemy)
     {
-        enemy._rigidbody.linearVelocity = enemy._rigidbody.transform.up * _strawberryBaseStats.BaseMoveSpeed;
+        enemy._rigidbody.linearVelocity = enemy._rigidbody.transform.up * _enemyBaseStats.BaseMoveSpeed;
     }
 
 
@@ -131,7 +121,7 @@ public class Melee_EnemyManager : MonoBehaviour, IPauseableUpdate, IPauseableFix
     #region _enemyPool
     Melee_EnemyController CreateEnemy()
     {
-        Melee_EnemyController newEnemy = Instantiate(_strawberryPrefab, _spawnPosition, _rotation, transform);
+        Melee_EnemyController newEnemy = Instantiate(_enemyPrefab, _spawnPosition, Quaternion.identity, transform);
         newEnemy.gameObject.SetActive(false);
         newEnemy.name = "Pooled Melee Strawberry";
         return newEnemy;
