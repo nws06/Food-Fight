@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Pool;
 
@@ -10,12 +11,14 @@ public class Melee_EnemyManager : MonoBehaviour, IPauseableUpdate, IPauseableFix
     public Vector2 _spawnPosition = new Vector2(-50f, 0f);
     public Quaternion _rotation = Quaternion.identity;
 
+    [SerializeField] private Melee_EnemyBaseStats _strawberryBaseStats;
     [SerializeField] private float _minSpawnTime = 0.1f;
     [SerializeField] private float _maxSpawnTime = 2.0f;
     private float _nextSpawnTime = 0f;
     private float _randomXPosition;
     private float _randomYPosition;
     private Vector3 _randomPosition;
+    private List<GameObject> _activeEnemies;
 
 
 
@@ -103,6 +106,8 @@ public class Melee_EnemyManager : MonoBehaviour, IPauseableUpdate, IPauseableFix
 
     void GetEnemy(GameObject enemy)
     {
+        _activeEnemies.Add(enemy);
+
         RandomizeLocation(enemy);
 
         enemy.SetActive(true);
@@ -110,6 +115,8 @@ public class Melee_EnemyManager : MonoBehaviour, IPauseableUpdate, IPauseableFix
 
     void ReleaseEnemy(GameObject enemy)
     {
+        _activeEnemies.Remove(enemy);
+
         enemy.SetActive(false);
     }
 
