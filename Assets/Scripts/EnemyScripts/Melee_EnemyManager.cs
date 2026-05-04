@@ -18,7 +18,7 @@ public class Melee_EnemyManager : MonoBehaviour, IPauseableUpdate, IPauseableFix
     private float _randomXPosition;
     private float _randomYPosition;
     private Vector3 _randomPosition;
-    private List<GameObject> _activeEnemies = new List<GameObject>();
+    private List<Melee_EnemyController> _activeEnemies = new List<Melee_EnemyController>();
 
 
 
@@ -106,7 +106,7 @@ public class Melee_EnemyManager : MonoBehaviour, IPauseableUpdate, IPauseableFix
 
     void GetEnemy(Melee_EnemyController enemy)
     {
-        _activeEnemies.Add(enemy.gameObject);
+        _activeEnemies.Add(enemy);
 
         RandomizeLocation(enemy.gameObject);
 
@@ -115,7 +115,7 @@ public class Melee_EnemyManager : MonoBehaviour, IPauseableUpdate, IPauseableFix
 
     void ReleaseEnemy(Melee_EnemyController enemy)
     {
-        _activeEnemies.Remove(enemy.gameObject);
+        _activeEnemies.Remove(enemy);
 
         enemy.gameObject.SetActive(false);
     }
