@@ -1,23 +1,7 @@
 using UnityEngine;
 
-public class Melee_EnemyController : MonoBehaviour, IPauseableFixedUpdate
+public class Melee_EnemyController : MonoBehaviour
 {
-    void OnEnable()
-    {
-        UpdateManager.Instance.RegisterForFixedUpdate(this);
-    }
-
-
-
-    public void OnPauseableFixedUpdate(float deltaTime)
-    {
-        
-    }
-
-
-
-    void OnDisable()
-    {
-        UpdateManager.Instance.UnregisterFromFixedUpdate(this);
-    }
+    public float _currentHp;
+    public Rigidbody2D _rigidbody;
 }
