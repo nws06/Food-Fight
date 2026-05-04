@@ -7,7 +7,7 @@ public class Melee_EnemyManager : MonoBehaviour, IPauseableUpdate, IPauseableFix
     public Melee_EnemyController _strawberryPrefab;
     public Melee_EnemyController _spawningEnemy;
     public Transform _playerTransform;
-    public ObjectPool<GameObject> _enemyPool;
+    public ObjectPool<Melee_EnemyController> _enemyPool;
     public Vector2 _spawnPosition = new Vector2(-50f, 0f);
     public Quaternion _rotation = Quaternion.identity;
 
@@ -18,13 +18,13 @@ public class Melee_EnemyManager : MonoBehaviour, IPauseableUpdate, IPauseableFix
     private float _randomXPosition;
     private float _randomYPosition;
     private Vector3 _randomPosition;
-    private List<GameObject> _activeEnemies;
+    private List<GameObject> _activeEnemies = new List<GameObject>();
 
 
 
     void Awake()
     {
-        _enemyPool = new ObjectPool<GameObject>(
+        _enemyPool = new ObjectPool<Melee_EnemyController>(
             createFunc: CreateEnemy,
             actionOnGet: GetEnemy,
             actionOnRelease: ReleaseEnemy,
@@ -96,31 +96,31 @@ public class Melee_EnemyManager : MonoBehaviour, IPauseableUpdate, IPauseableFix
 
 
     #region _enemyPool
-    GameObject CreateEnemy()
+    Melee_EnemyController CreateEnemy()
     {
-        GameObject newEnemy = Instantiate(_strawberryPrefab.gameObject, _spawnPosition, _rotation, transform);
-        newEnemy.SetActive(false);
+        Melee_EnemyController newEnemy = Instantiate(_strawberryPrefab, _spawnPosition, _rotation, transform);
+        newEnemy.gameObject.SetActive(false);
         newEnemy.name = "Pooled Melee Strawberry";
         return newEnemy;
     }
 
-    void GetEnemy(GameObject enemy)
+    void GetEnemy(Melee_EnemyController enemy)
     {
-        _activeEnemies.Add(enemy);
+        _activeEnemies.Add(enemy.gameObject);
 
-        RandomizeLocation(enemy);
+        RandomizeLocation(enemy.gameObject);
 
-        enemy.SetActive(true);
+        enemy.gameObject.SetActive(true);
     }
 
-    void ReleaseEnemy(GameObject enemy)
+    void ReleaseEnemy(Melee_EnemyController enemy)
     {
-        _activeEnemies.Remove(enemy);
+        _activeEnemies.Remove(enemy.gameObject);
 
-        enemy.SetActive(false);
+        enemy.gameObject.SetActive(false);
     }
 
-    void DestroyEnemy(GameObject enemy)
+    void DestroyEnemy(Melee_EnemyController enemy)
     {
         Destroy(enemy);
     }
