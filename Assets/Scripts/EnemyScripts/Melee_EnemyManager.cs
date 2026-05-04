@@ -16,6 +16,7 @@ public class Melee_EnemyManager : MonoBehaviour, IPauseableUpdate, IPauseableFix
     private float _randomXPosition;
     private float _randomYPosition;
     private Vector3 _randomPosition;
+    private float _randomSize;
 
     private Vector2 _faceDirection;
 
@@ -118,6 +119,14 @@ public class Melee_EnemyManager : MonoBehaviour, IPauseableUpdate, IPauseableFix
 
 
 
+    void RandomizeSize(GameObject enemy)
+    {
+        _randomSize = Random.Range(_enemyBaseStats.MinSize, _enemyBaseStats.MaxSize);
+        enemy.transform.localScale = new Vector3(_randomSize, _randomSize, _randomSize);
+    }
+
+
+
     #region _enemyPool
     Melee_EnemyController CreateEnemy()
     {
@@ -132,6 +141,7 @@ public class Melee_EnemyManager : MonoBehaviour, IPauseableUpdate, IPauseableFix
         _activeEnemies.Add(enemy);
 
         RandomizeLocation(enemy.gameObject);
+        RandomizeSize(enemy.gameObject);
 
         enemy.gameObject.SetActive(true);
     }
