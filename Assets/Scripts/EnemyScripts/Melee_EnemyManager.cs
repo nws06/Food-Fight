@@ -99,7 +99,7 @@ public class Melee_EnemyManager : MonoBehaviour, IPauseableUpdate, IPauseableFix
     /// between 80 and 120 units away on the x axis <br />
     /// between 25 and 75 units away on the y axis 
     /// </summary>
-    public void RandomizeLocation(GameObject enemy)
+    void RandomizeLocation(GameObject enemy)
     {
         // X position: 
         _randomXPosition = (Random.Range(0, 2) * 2 - 1) * Random.Range(0f, 30f);
