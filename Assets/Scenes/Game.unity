@@ -135,7 +135,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 2147483647
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!4 &324432
 Transform:
   m_ObjectHideFlags: 0
@@ -163,11 +163,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: cb5c8551582ff5d4db73a9c653ec40c4, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::Melee_EnemyManager
-  _strawberryPrefab: {fileID: -5068085599327160568, guid: 1b3d6939d2497bc44a07575c4fd194db, type: 3}
-  _spawningEnemy: {fileID: 0}
   _playerTransform: {fileID: 1044882537}
-  _spawnPosition: {x: -50, y: 0}
-  _rotation: {x: 0, y: 0, z: 0, w: 1}
+  _enemyPrefab: {fileID: -5068085599327160568, guid: 1b3d6939d2497bc44a07575c4fd194db, type: 3}
+  _enemyBaseStats: {fileID: 11400000, guid: b7f5773836b8b7a429e28ebeb1ca43dd, type: 2}
   _minSpawnTime: 0.1
   _maxSpawnTime: 2
 --- !u!1 &359368979
