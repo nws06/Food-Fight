@@ -17,6 +17,7 @@ public class Melee_EnemyManager : MonoBehaviour, IPauseableUpdate, IPauseableFix
     private float _nextSpawnTime = 0f;
     private float _randomXPosition;
     private float _randomYPosition;
+    private Vector2 _faceDirection;
     private Vector3 _randomPosition;
     private List<Melee_EnemyController> _activeEnemies = new List<Melee_EnemyController>();
 
@@ -33,6 +34,13 @@ public class Melee_EnemyManager : MonoBehaviour, IPauseableUpdate, IPauseableFix
             defaultCapacity: 5,
             maxSize: 10
         );
+    }
+
+
+
+    void OnEnable()
+    {
+        PauseManager.OnGamePause += OnGamePause;
     }
 
 
@@ -66,7 +74,32 @@ public class Melee_EnemyManager : MonoBehaviour, IPauseableUpdate, IPauseableFix
 
     public void OnPauseableFixedUpdate(float deltaTime)
     {
-        
+        foreach (Melee_EnemyController enemy in _activeEnemies)
+        {
+            RotateEnemy(enemy);
+            MoveEnemy(enemy);
+        }
+    }
+
+
+
+    void RotateEnemy(Melee_EnemyController enemy)
+    {
+        _faceDirection = (Vector2)_playerTransform.position - enemy._rigidbody.position;
+        enemy._rigidbody.rotation = Mathf.Atan2(_faceDirection.y, _faceDirection.x) * Mathf.Rad2Deg - 90f;
+    }
+
+    void MoveEnemy(Melee_EnemyController enemy)
+    {
+        enemy._rigidbody.linearVelocity = enemy._rigidbody.transform.up * _strawberryBaseStats.BaseMoveSpeed;
+    }
+
+
+
+    void OnGamePause()
+    {
+        foreach (Melee_EnemyController enemy in _activeEnemies)
+            enemy._rigidbody.linearVelocity = Vector2.zero;
     }
 
 
@@ -132,5 +165,7 @@ public class Melee_EnemyManager : MonoBehaviour, IPauseableUpdate, IPauseableFix
     {
         UpdateManager.Instance.UnregisterFromUpdate(this);
         UpdateManager.Instance.UnregisterFromFixedUpdate(this);
+
+        PauseManager.OnGamePause -= OnGamePause;
     }
 }
