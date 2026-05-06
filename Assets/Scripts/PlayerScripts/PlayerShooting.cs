@@ -52,7 +52,7 @@ public class PlayerShooting : MonoBehaviour, IPauseableUpdate
         );
     }
 
-    void OnEnable()
+    void Start()
     {
         UpdateManager.Instance.RegisterForUpdate(this);
     }

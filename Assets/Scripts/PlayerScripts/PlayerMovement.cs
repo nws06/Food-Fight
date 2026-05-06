@@ -18,18 +18,15 @@ public class PlayerMovement : MonoBehaviour, IPauseableUpdate, IPauseableFixedUp
         _speed = _baseStats.BaseMoveSpeed;
     }
 
-    void OnEnable()
+
+
+    void Start()
     {
         UpdateManager.Instance.RegisterForUpdate(this);
         UpdateManager.Instance.RegisterForFixedUpdate(this);
 
         PauseManager.OnGamePause += OnGamePause;
-    }
 
-
-
-    void Start()
-    {
         // Gather components 
         _movementAction = InputSystem.actions.FindAction("Move");
         _rigidBody = GetComponent<Rigidbody2D>();
