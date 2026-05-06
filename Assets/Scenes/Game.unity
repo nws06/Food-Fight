@@ -166,6 +166,7 @@ MonoBehaviour:
   _playerTransform: {fileID: 1044882537}
   _enemyPrefab: {fileID: -5068085599327160568, guid: 1b3d6939d2497bc44a07575c4fd194db, type: 3}
   _enemyBaseStats: {fileID: 11400000, guid: b7f5773836b8b7a429e28ebeb1ca43dd, type: 2}
+  _playerBaseStats: {fileID: 11400000, guid: 4b47cbf7aee17c941b403122ebb6f3e8, type: 2}
   _minSpawnTime: 0.1
   _maxSpawnTime: 2
 --- !u!1 &359368979
