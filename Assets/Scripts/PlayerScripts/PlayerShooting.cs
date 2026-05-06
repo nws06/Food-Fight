@@ -2,13 +2,14 @@ using UnityEngine;
 using UnityEngine.InputSystem;
 using System.Collections;
 using UnityEngine.Pool;
+using System.Collections.Generic;
 
 public class PlayerShooting : MonoBehaviour, IPauseableUpdate
 {
     [SerializeField] private PlayerBaseStats _baseStats;
     [SerializeField] private Transform _firePoint;
     [SerializeField] private Transform _bulletPoolParent;
-    [SerializeField] private GameObject _bulletPrefab;
+    [SerializeField] private BulletController _bulletPrefab;
     private float _damage;
     private int _currentAmmo;
     private int _maxAmmo;
@@ -111,7 +112,7 @@ public class PlayerShooting : MonoBehaviour, IPauseableUpdate
 
     GameObject CreateBullet()
     {
-        GameObject newBullet = Instantiate(_bulletPrefab, _firePoint.position, _firePoint.rotation, _bulletPoolParent);
+        GameObject newBullet = Instantiate(_bulletPrefab.gameObject, _firePoint.position, _firePoint.rotation, _bulletPoolParent);
         newBullet.SetActive(false);
         newBullet.name = "Pooled Bullet";
         return newBullet;
