@@ -36,7 +36,7 @@ public class Melee_EnemyManager : MonoBehaviour, IPauseableUpdate, IPauseableFix
             Destroy(this);
 
 
-
+            
         _enemyPool = new ObjectPool<Melee_EnemyController>(
             createFunc: CreateEnemy,
             actionOnGet: GetEnemy,
@@ -93,6 +93,24 @@ public class Melee_EnemyManager : MonoBehaviour, IPauseableUpdate, IPauseableFix
     void MoveEnemy(Melee_EnemyController enemy)
     {
         enemy._rigidbody.linearVelocity = enemy._rigidbody.transform.up * _enemyBaseStats.BaseMoveSpeed;
+    }
+
+
+
+    public void DamageEnemy(Melee_EnemyController enemy, float damage)
+    {
+        enemy._currentHp -= damage;
+
+        if (enemy._currentHp <= 0)
+            KillEnemy(enemy);
+    }
+
+    void KillEnemy(Melee_EnemyController enemy)
+    {
+        // Death animation
+        // Spawn XP
+
+        _enemyPool.Release(enemy);
     }
 
 
