@@ -56,7 +56,12 @@ public class PlayerShooting : MonoBehaviour, IPauseableUpdate, IPauseableFixedUp
         );
     }
 
-    void OnEnable()
+    /*void OnEnable()
+    {
+        UpdateManager.Instance.RegisterForUpdate(this);
+    }*/
+
+    void Start()
     {
         UpdateManager.Instance.RegisterForUpdate(this);
     }
