@@ -4,9 +4,12 @@ using UnityEngine.Pool;
 
 public class Melee_EnemyManager : MonoBehaviour, IPauseableUpdate, IPauseableFixedUpdate
 {
+    public static Melee_EnemyManager Instance;
+
     [SerializeField] private Transform _playerTransform;
     [SerializeField] private Melee_EnemyController _enemyPrefab;
     [SerializeField] private Melee_EnemyBaseStats _enemyBaseStats;
+    [SerializeField] private PlayerBaseStats _playerBaseStats;
     [SerializeField] private float _minSpawnTime = 0.1f;
     [SerializeField] private float _maxSpawnTime = 2.0f;
 
@@ -27,6 +30,13 @@ public class Melee_EnemyManager : MonoBehaviour, IPauseableUpdate, IPauseableFix
 
     void Awake()
     {
+        if (Instance == null)
+            Instance = this;
+        else
+            Destroy(this);
+
+
+
         _enemyPool = new ObjectPool<Melee_EnemyController>(
             createFunc: CreateEnemy,
             actionOnGet: GetEnemy,
