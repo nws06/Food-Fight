@@ -143,12 +143,16 @@ public class Melee_EnemyManager : MonoBehaviour, IPauseableUpdate, IPauseableFix
         RandomizeLocation(enemy.gameObject);
         RandomizeSize(enemy.gameObject);
 
+        enemy._currentHp = _enemyBaseStats.BaseHealth;
+
         enemy.gameObject.SetActive(true);
     }
 
     void ReleaseEnemy(Melee_EnemyController enemy)
     {
         _activeEnemies.Remove(enemy);
+
+        enemy._currentHp = 0;
 
         enemy.gameObject.SetActive(false);
     }
