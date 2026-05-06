@@ -2,13 +2,14 @@ using UnityEngine;
 using UnityEngine.InputSystem;
 using System.Collections;
 using UnityEngine.Pool;
+using System.Collections.Generic;
 
 public class PlayerShooting : MonoBehaviour, IPauseableUpdate
 {
     [SerializeField] private PlayerBaseStats _baseStats;
     [SerializeField] private Transform _firePoint;
     [SerializeField] private Transform _bulletPoolParent;
-    [SerializeField] private GameObject _bulletPrefab;
+    [SerializeField] private BulletController _bulletPrefab;
     private float _damage;
     private int _currentAmmo;
     private int _maxAmmo;
@@ -21,7 +22,8 @@ public class PlayerShooting : MonoBehaviour, IPauseableUpdate
     private InputAction _shootAction;
     private InputAction _reloadAction;
     private Coroutine _reloadCoroutine;
-    private ObjectPool<GameObject> _bulletPool;
+    private ObjectPool<BulletController> _bulletPool;
+    private List<BulletController> _activeBullets;
 
 
 
@@ -41,7 +43,7 @@ public class PlayerShooting : MonoBehaviour, IPauseableUpdate
         _shootAction = InputSystem.actions.FindAction("Attack");
         _reloadAction = InputSystem.actions.FindAction("Reload");
 
-        _bulletPool = new ObjectPool<GameObject>(
+        _bulletPool = new ObjectPool<BulletController>(
             createFunc: CreateBullet,
             actionOnGet: GetBullet,
             actionOnRelease: ReleaseBullet,
@@ -55,6 +57,8 @@ public class PlayerShooting : MonoBehaviour, IPauseableUpdate
     void Start()
     {
         UpdateManager.Instance.RegisterForUpdate(this);
+
+        //PauseManager.OnGamePause += OnGamePause;
     }
 
 
@@ -109,35 +113,41 @@ public class PlayerShooting : MonoBehaviour, IPauseableUpdate
 
 
 
-    GameObject CreateBullet()
+    #region _bulletPool
+    BulletController CreateBullet()
     {
-        GameObject newBullet = Instantiate(_bulletPrefab, _firePoint.position, _firePoint.rotation, _bulletPoolParent);
-        newBullet.SetActive(false);
+        BulletController newBullet = Instantiate(_bulletPrefab, _firePoint.position, _firePoint.rotation, _bulletPoolParent);
+        newBullet.gameObject.SetActive(false);
         newBullet.name = "Pooled Bullet";
         return newBullet;
     }
 
-    void GetBullet(GameObject bullet)
+    void GetBullet(BulletController bullet)
     {
+        _activeBullets.Add(bullet);
+
         bullet.transform.SetPositionAndRotation(_firePoint.position, _firePoint.rotation);
-        bullet.SetActive(true);
+        bullet.gameObject.SetActive(true);
 
         StartCoroutine(BulletLifetime(bullet));
     }
 
-    void ReleaseBullet(GameObject bullet)
+    void ReleaseBullet(BulletController bullet)
     {
-        bullet.SetActive(false); 
+        _activeBullets.Remove(bullet);
+
+        bullet.gameObject.SetActive(false); 
     }
 
-    void DestroyBullet(GameObject bullet)
+    void DestroyBullet(BulletController bullet)
     {
         Destroy(bullet);
     }
+    #endregion
 
 
 
-    IEnumerator BulletLifetime(GameObject bullet)
+    IEnumerator BulletLifetime(BulletController bullet)
     {
         float elapsedTime = 0f;
         while (elapsedTime < _bulletLifetime)
@@ -155,5 +165,7 @@ public class PlayerShooting : MonoBehaviour, IPauseableUpdate
     void OnDisable()
     {
         UpdateManager.Instance.UnregisterFromUpdate(this);
+
+        //PauseManager.OnGamePause -= OnGamePause;
     }
 }
