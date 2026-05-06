@@ -38,6 +38,16 @@ public class BulletController : MonoBehaviour, IPauseableFixedUpdate
 
 
 
+    void OnTriggerEnter2D(Collider2D otherCollider)
+    {
+        if (otherCollider.CompareTag("Enemy"))
+        {
+            Melee_EnemyManager.Instance.DamageEnemy(otherCollider.GetComponent<Melee_EnemyController>(), _baseStats.BaseDamage);
+        }
+    }
+
+
+
     void OnDisable()
     {
         UpdateManager.Instance.UnregisterFromFixedUpdate(this);
