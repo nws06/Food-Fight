@@ -4,7 +4,7 @@ using System.Collections;
 using UnityEngine.Pool;
 using System.Collections.Generic;
 
-public class PlayerShooting : MonoBehaviour, IPauseableUpdate
+public class PlayerShooting : MonoBehaviour, IPauseableUpdate, IPauseableFixedUpdate
 {
     [SerializeField] private PlayerBaseStats _baseStats;
     [SerializeField] private Transform _firePoint;
@@ -29,6 +29,8 @@ public class PlayerShooting : MonoBehaviour, IPauseableUpdate
 
     void Awake()
     {
+        PauseManager.OnGamePause += OnGamePause;
+
         _damage = _baseStats.BaseDamage;
         _maxAmmo = _baseStats.BaseMaxAmmo;
         _reloadTime = _baseStats.BaseReloadTime;
@@ -73,6 +75,20 @@ public class PlayerShooting : MonoBehaviour, IPauseableUpdate
 
         if (_reloadAction.IsPressed() && !_isReloading && _currentAmmo < _maxAmmo)
             _reloadCoroutine = StartCoroutine(Reload()); 
+    }
+
+    public void OnPauseableFixedUpdate(float deltaTime)
+    {
+        foreach (BulletController bullet in _activeBullets)
+            bullet._rigidbody.linearVelocity = transform.up * _bulletSpeed;
+    }
+
+
+
+    void OnGamePause()
+    {
+        foreach (BulletController bullet in _activeBullets)
+            bullet._rigidbody.linearVelocity = Vector2.zero;
     }
 
 
