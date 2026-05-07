@@ -56,14 +56,13 @@ public class PlayerShooting : MonoBehaviour, IPauseableUpdate, IPauseableFixedUp
         );
     }
 
-    /*void OnEnable()
-    {
-        UpdateManager.Instance.RegisterForUpdate(this);
-    }*/
-
     void Start()
     {
         UpdateManager.Instance.RegisterForUpdate(this);
+
+        PauseManager.OnGamePause += OnGamePause;
+        PauseManager.OnGameUnpause += OnGameUnpause;
+        BulletController.OnBulletCollidesEnemy += BulletHitEnemy;
     }
 
 
@@ -80,6 +79,39 @@ public class PlayerShooting : MonoBehaviour, IPauseableUpdate, IPauseableFixedUp
 
         if (_reloadAction.IsPressed() && !_isReloading && _currentAmmo < _maxAmmo)
             _reloadCoroutine = StartCoroutine(Reload()); 
+        
+        
+        for (int i = _activeBullets.Count - 1; i >= 0; i--)
+        {
+            if (Time.time - _activeBullets[i]._spawnTime >= _bulletLifetime)
+                _bulletPool.Release(_activeBullets[i]);
+        }
+    }
+
+
+
+    void OnGamePause()
+    {
+        foreach (BulletController bullet in _activeBullets)
+            bullet._rigidbody.linearVelocity = Vector2.zero;
+    }
+
+    void OnGameUnpause()
+    {
+        foreach (BulletController bullet in _activeBullets)
+            bullet._rigidbody.linearVelocity = bullet.transform.up * _bulletSpeed;
+    }
+
+
+
+    void BulletHitEnemy(BulletController bullet, Collider2D enemyCollider)
+    {
+        if (enemyCollider.TryGetComponent(out Melee_EnemyController enemy))
+        {
+            Melee_EnemyManager.Instance.DamageEnemy(enemy, _baseStats.BaseDamage);
+
+            _bulletPool.Release(bullet);
+        }
     }
 
     public void OnPauseableFixedUpdate(float deltaTime)
@@ -143,17 +175,21 @@ public class PlayerShooting : MonoBehaviour, IPauseableUpdate, IPauseableFixedUp
 
     void GetBullet(BulletController bullet)
     {
+        bullet._spawnTime = Time.time;
         _activeBullets.Add(bullet);
 
         bullet.transform.SetPositionAndRotation(_firePoint.position, _firePoint.rotation);
         bullet.gameObject.SetActive(true);
+        bullet._rigidbody.linearVelocity = bullet.transform.up * _bulletSpeed;
 
-        StartCoroutine(BulletLifetime(bullet));
+        //StartCoroutine(BulletLifetime(bullet));
     }
 
     void ReleaseBullet(BulletController bullet)
     {
         _activeBullets.Remove(bullet);
+
+        bullet._rigidbody.linearVelocity = Vector2.zero;
 
         bullet.gameObject.SetActive(false); 
     }
@@ -184,5 +220,9 @@ public class PlayerShooting : MonoBehaviour, IPauseableUpdate, IPauseableFixedUp
     void OnDisable()
     {
         UpdateManager.Instance.UnregisterFromUpdate(this);
+
+        PauseManager.OnGamePause -= OnGamePause;
+        PauseManager.OnGameUnpause -= OnGameUnpause;
+        BulletController.OnBulletCollidesEnemy -= BulletHitEnemy;
     }
 }
