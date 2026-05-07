@@ -6,7 +6,7 @@ public class BulletController : MonoBehaviour
 {
     public static event Action<BulletController, Collider2D> OnBulletCollidesEnemy;
 
-    public float _spawnTime;
+    public float _lifetime;
 
     [SerializeField] private Rigidbody2D _rigidbody;
     [SerializeField] private TrailRenderer _trailRenderer;
@@ -15,7 +15,7 @@ public class BulletController : MonoBehaviour
 
     public void Initialize(Vector3 position, Quaternion rotation, float bulletSpeed)
     {
-        _spawnTime = Time.time;
+        _lifetime = 0f;
 
         _trailRenderer.Clear();
 

@@ -40,7 +40,9 @@ public class BulletManager : MonoBehaviour, IPauseableUpdate
     {
         for (int i = _activeBullets.Count - 1; i >= 0; i--)
         {
-            if (Time.time - _activeBullets[i]._spawnTime >= _baseStats.BaseBulletLifetime)
+            _activeBullets[i]._lifetime += deltaTime;
+
+            if (_activeBullets[i]._lifetime >= _baseStats.BaseBulletLifetime)
                 _bulletPool.Release(_activeBullets[i]);
         }
     }
