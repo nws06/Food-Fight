@@ -172,6 +172,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::BulletController
   _rigidbody: {fileID: 5691910742779431341}
+  _spawnTime: 0
+  _trailRenderer: {fileID: 2764614069874701583}
 --- !u!96 &2764614069874701583
 TrailRenderer:
   serializedVersion: 4

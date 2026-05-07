@@ -5,14 +5,44 @@ using UnityEngine;
 public class BulletController : MonoBehaviour
 {
     public static event Action<BulletController, Collider2D> OnBulletCollidesEnemy;
-    public Rigidbody2D _rigidbody;
+
     public float _spawnTime;
 
+    [SerializeField] private Rigidbody2D _rigidbody;
+    [SerializeField] private TrailRenderer _trailRenderer;
 
 
-    void Awake()
+
+    public void Initialize(Vector3 position, Quaternion rotation, float bulletSpeed)
     {
         _spawnTime = Time.time;
+
+        _trailRenderer.Clear();
+
+        transform.SetPositionAndRotation(position, rotation);
+
+        gameObject.SetActive(true);
+
+        _rigidbody.linearVelocity = transform.up * bulletSpeed;
+    }
+
+    public void Terminate()
+    {
+        _rigidbody.linearVelocity = Vector2.zero;
+
+        gameObject.SetActive(false);
+    }
+
+
+
+    public void StopMovement()
+    {
+        _rigidbody.linearVelocity = Vector2.zero;
+    }
+
+    public void StartMovement(float bulletSpeed)
+    {
+        _rigidbody.linearVelocity = transform.up * bulletSpeed;
     }
 
 

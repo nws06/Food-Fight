@@ -4,7 +4,7 @@ using System.Collections;
 using UnityEngine.Pool;
 using System.Collections.Generic;
 
-public class PlayerShooting : MonoBehaviour, IPauseableUpdate, IPauseableFixedUpdate
+public class PlayerShooting : MonoBehaviour, IPauseableUpdate
 {
     [SerializeField] private PlayerBaseStats _baseStats;
     [SerializeField] private Transform _firePoint;
@@ -93,13 +93,13 @@ public class PlayerShooting : MonoBehaviour, IPauseableUpdate, IPauseableFixedUp
     void OnGamePause()
     {
         foreach (BulletController bullet in _activeBullets)
-            bullet._rigidbody.linearVelocity = Vector2.zero;
+            bullet.StopMovement();
     }
 
     void OnGameUnpause()
     {
         foreach (BulletController bullet in _activeBullets)
-            bullet._rigidbody.linearVelocity = bullet.transform.up * _bulletSpeed;
+            bullet.StartMovement(_bulletSpeed);
     }
 
 
@@ -112,12 +112,6 @@ public class PlayerShooting : MonoBehaviour, IPauseableUpdate, IPauseableFixedUp
 
             _bulletPool.Release(bullet);
         }
-    }
-
-    public void OnPauseableFixedUpdate(float deltaTime)
-    {
-        foreach (BulletController bullet in _activeBullets)
-            bullet._rigidbody.linearVelocity = transform.up * _bulletSpeed;
     }
 
 
@@ -167,21 +161,16 @@ public class PlayerShooting : MonoBehaviour, IPauseableUpdate, IPauseableFixedUp
 
     void GetBullet(BulletController bullet)
     {
-        bullet._spawnTime = Time.time;
         _activeBullets.Add(bullet);
 
-        bullet.transform.SetPositionAndRotation(_firePoint.position, _firePoint.rotation);
-        bullet.gameObject.SetActive(true);
-        bullet._rigidbody.linearVelocity = bullet.transform.up * _bulletSpeed;
+        bullet.Initialize(_firePoint.position, _firePoint.rotation, _bulletSpeed);
     }
 
     void ReleaseBullet(BulletController bullet)
     {
         _activeBullets.Remove(bullet);
 
-        bullet._rigidbody.linearVelocity = Vector2.zero;
-
-        bullet.gameObject.SetActive(false); 
+        bullet.Terminate();
     }
 
     void DestroyBullet(BulletController bullet)
