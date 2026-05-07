@@ -919,9 +919,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::PlayerShooting
   _baseStats: {fileID: 11400000, guid: 4b47cbf7aee17c941b403122ebb6f3e8, type: 2}
-  _firePoint: {fileID: 359368980}
-  _bulletPoolParent: {fileID: 1923141117}
-  _bulletPrefab: {fileID: 4406406970591281571, guid: 70053a9832c196d4e87d8b4150115af2, type: 3}
+  _bulletManager: {fileID: 1923141118}
 --- !u!1 &1823962693
 GameObject:
   m_ObjectHideFlags: 0
@@ -1019,8 +1017,9 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 1923141117}
+  - component: {fileID: 1923141118}
   m_Layer: 0
-  m_Name: BulletPool
+  m_Name: Bullets
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -1041,6 +1040,21 @@ Transform:
   m_Children: []
   m_Father: {fileID: 1044882537}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &1923141118
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1923141116}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 40205ffc188156d4e85a4362eaf58e67, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::BulletManager
+  _baseStats: {fileID: 11400000, guid: 4b47cbf7aee17c941b403122ebb6f3e8, type: 2}
+  _firePoint: {fileID: 359368980}
+  _bulletPrefab: {fileID: 4406406970591281571, guid: 70053a9832c196d4e87d8b4150115af2, type: 3}
 --- !u!1660057539 &9223372036854775807
 SceneRoots:
   m_ObjectHideFlags: 0
