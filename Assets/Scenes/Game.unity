@@ -921,7 +921,7 @@ MonoBehaviour:
   _baseStats: {fileID: 11400000, guid: 4b47cbf7aee17c941b403122ebb6f3e8, type: 2}
   _firePoint: {fileID: 359368980}
   _bulletPoolParent: {fileID: 1923141117}
-  _bulletPrefab: {fileID: 5647807661621057168, guid: 70053a9832c196d4e87d8b4150115af2, type: 3}
+  _bulletPrefab: {fileID: 4406406970591281571, guid: 70053a9832c196d4e87d8b4150115af2, type: 3}
 --- !u!1 &1823962693
 GameObject:
   m_ObjectHideFlags: 0
