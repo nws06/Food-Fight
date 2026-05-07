@@ -1,75 +1,36 @@
 using UnityEngine;
 using UnityEngine.InputSystem;
 using System.Collections;
-using UnityEngine.Pool;
-using System.Collections.Generic;
 
 public class PlayerShooting : MonoBehaviour, IPauseableUpdate
 {
     [SerializeField] private PlayerBaseStats _baseStats;
-    [SerializeField] private Transform _firePoint;
-    [SerializeField] private Transform _bulletPoolParent;
-    [SerializeField] private BulletController _bulletPrefab;
-    private float _damage;
-    private int _currentAmmo;
-    private int _maxAmmo;
-    private float _reloadTime;
-    private float _bulletSpeed;
-    private float _shotCooldown;
-    private float _bulletLifetime;
+    [SerializeField] private BulletManager _bulletManager;
     private bool _isReloading;
-    private float _lastShotTime;
+    private int _currentAmmo;
+    private float _lastShotTime = 0f;
     private InputAction _shootAction;
     private InputAction _reloadAction;
     private Coroutine _reloadCoroutine;
-    private ObjectPool<BulletController> _bulletPool;
-    private List<BulletController> _activeBullets = new List<BulletController>();
 
 
 
     void Awake()
     {
-        PauseManager.OnGamePause += OnGamePause;
-
-        _damage = _baseStats.BaseDamage;
-        _maxAmmo = _baseStats.BaseMaxAmmo;
-        _reloadTime = _baseStats.BaseReloadTime;
-        _bulletSpeed = _baseStats.BaseBulletSpeed;
-        _shotCooldown = _baseStats.BaseShotCooldown;
-        _bulletLifetime = _baseStats.BaseBulletLifetime;
-
-        _currentAmmo = _maxAmmo;
-
-        _lastShotTime = -5f;
-
         _shootAction = InputSystem.actions.FindAction("Attack");
         _reloadAction = InputSystem.actions.FindAction("Reload");
-
-        _bulletPool = new ObjectPool<BulletController>(
-            createFunc: CreateBullet,
-            actionOnGet: GetBullet,
-            actionOnRelease: ReleaseBullet,
-            actionOnDestroy: DestroyBullet,
-            collectionCheck: true,   
-            defaultCapacity: 60,
-            maxSize: 1080
-        );
     }
 
     void Start()
     {
         UpdateManager.Instance.RegisterForUpdate(this);
-
-        PauseManager.OnGamePause += OnGamePause;
-        PauseManager.OnGameUnpause += OnGameUnpause;
-        BulletController.OnBulletCollidesEnemy += BulletHitEnemy;
     }
 
 
 
     public void OnPauseableUpdate(float deltaTime)
     {
-        if (_shootAction.IsPressed() && !_isReloading && Utils.IsOffCooldown(_lastShotTime, _shotCooldown))
+        if (_shootAction.IsPressed() && !_isReloading && Utils.IsOffCooldown(_lastShotTime, _baseStats.BaseShotCooldown))
         {
             if (_currentAmmo > 0)
                 Shoot();
@@ -77,41 +38,8 @@ public class PlayerShooting : MonoBehaviour, IPauseableUpdate
                 _reloadCoroutine = StartCoroutine(Reload()); 
         }
 
-        if (_reloadAction.IsPressed() && !_isReloading && _currentAmmo < _maxAmmo)
+        if (_reloadAction.IsPressed() && !_isReloading && _currentAmmo < _baseStats.BaseMaxAmmo)
             _reloadCoroutine = StartCoroutine(Reload()); 
-        
-        
-        for (int i = _activeBullets.Count - 1; i >= 0; i--)
-        {
-            if (Time.time - _activeBullets[i]._spawnTime >= _bulletLifetime)
-                _bulletPool.Release(_activeBullets[i]);
-        }
-    }
-
-
-
-    void OnGamePause()
-    {
-        foreach (BulletController bullet in _activeBullets)
-            bullet.StopMovement();
-    }
-
-    void OnGameUnpause()
-    {
-        foreach (BulletController bullet in _activeBullets)
-            bullet.StartMovement(_bulletSpeed);
-    }
-
-
-
-    void BulletHitEnemy(BulletController bullet, Collider2D enemyCollider)
-    {
-        if (enemyCollider.TryGetComponent(out Melee_EnemyController enemy))
-        {
-            Melee_EnemyManager.Instance.DamageEnemy(enemy, _baseStats.BaseDamage);
-
-            _bulletPool.Release(bullet);
-        }
     }
 
 
@@ -124,7 +52,7 @@ public class PlayerShooting : MonoBehaviour, IPauseableUpdate
         if (_currentAmmo <= 0) 
             _reloadCoroutine = StartCoroutine(Reload());
 
-        _bulletPool.Get();
+        _bulletManager.Shoot();
     }
 
 
@@ -134,7 +62,7 @@ public class PlayerShooting : MonoBehaviour, IPauseableUpdate
         _isReloading = true;
 
         float elapsedTime = 0f;
-        while (elapsedTime < _reloadTime)
+        while (elapsedTime < _baseStats.BaseReloadTime)
         {
             if (!PauseManager.isPaused)
                 elapsedTime += Time.deltaTime;
@@ -142,7 +70,7 @@ public class PlayerShooting : MonoBehaviour, IPauseableUpdate
             yield return null;
         }
 
-        _currentAmmo = _maxAmmo;
+        _currentAmmo = _baseStats.BaseMaxAmmo;
 
         _isReloading = false;
         StopCoroutine(_reloadCoroutine);
@@ -150,43 +78,8 @@ public class PlayerShooting : MonoBehaviour, IPauseableUpdate
 
 
 
-    #region _bulletPool
-    BulletController CreateBullet()
-    {
-        BulletController newBullet = Instantiate(_bulletPrefab, _firePoint.position, _firePoint.rotation, _bulletPoolParent);
-        newBullet.gameObject.SetActive(false);
-        newBullet.name = "Pooled Bullet";
-        return newBullet;
-    }
-
-    void GetBullet(BulletController bullet)
-    {
-        _activeBullets.Add(bullet);
-
-        bullet.Initialize(_firePoint.position, _firePoint.rotation, _bulletSpeed);
-    }
-
-    void ReleaseBullet(BulletController bullet)
-    {
-        _activeBullets.Remove(bullet);
-
-        bullet.Terminate();
-    }
-
-    void DestroyBullet(BulletController bullet)
-    {
-        Destroy(bullet);
-    }
-    #endregion
-
-
-
     void OnDisable()
     {
         UpdateManager.Instance.UnregisterFromUpdate(this);
-
-        PauseManager.OnGamePause -= OnGamePause;
-        PauseManager.OnGameUnpause -= OnGameUnpause;
-        BulletController.OnBulletCollidesEnemy -= BulletHitEnemy;
     }
 }
