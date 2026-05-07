@@ -77,6 +77,13 @@ public class PlayerShooting : MonoBehaviour, IPauseableUpdate
 
         if (_reloadAction.IsPressed() && !_isReloading && _currentAmmo < _maxAmmo)
             _reloadCoroutine = StartCoroutine(Reload()); 
+        
+        for (int i = _activeBullets.Count - 1; i >= 0; i--)
+        {
+            if (Time.time - _activeBullets[i]._spawnTime >= _bulletLifetime)
+                _bulletPool.Release(_activeBullets[i]);
+        }
+    }
 
 
 
@@ -151,13 +158,14 @@ public class PlayerShooting : MonoBehaviour, IPauseableUpdate
 
     void GetBullet(BulletController bullet)
     {
+        bullet._spawnTime = Time.time;
         _activeBullets.Add(bullet);
 
         bullet.transform.SetPositionAndRotation(_firePoint.position, _firePoint.rotation);
         bullet.gameObject.SetActive(true);
         bullet._rigidbody.linearVelocity = bullet.transform.up * _bulletSpeed;
 
-        StartCoroutine(BulletLifetime(bullet));
+        //StartCoroutine(BulletLifetime(bullet));
     }
 
     void ReleaseBullet(BulletController bullet)
