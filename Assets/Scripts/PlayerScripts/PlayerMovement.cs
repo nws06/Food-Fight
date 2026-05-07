@@ -18,14 +18,6 @@ public class PlayerMovement : MonoBehaviour, IPauseableUpdate, IPauseableFixedUp
         _speed = _baseStats.BaseMoveSpeed;
     }
 
-    /*void OnEnable()
-    {
-        UpdateManager.Instance.RegisterForUpdate(this);
-        UpdateManager.Instance.RegisterForFixedUpdate(this);
-
-        PauseManager.OnGamePause += OnGamePause;
-    }*/
-
 
 
     void Start()
