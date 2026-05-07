@@ -23,7 +23,7 @@ public class PlayerShooting : MonoBehaviour, IPauseableUpdate
     private InputAction _reloadAction;
     private Coroutine _reloadCoroutine;
     private ObjectPool<BulletController> _bulletPool;
-    private List<BulletController> _activeBullets;
+    private List<BulletController> _activeBullets = new List<BulletController>();
 
 
 
@@ -58,7 +58,9 @@ public class PlayerShooting : MonoBehaviour, IPauseableUpdate
     {
         UpdateManager.Instance.RegisterForUpdate(this);
 
-        //PauseManager.OnGamePause += OnGamePause;
+        PauseManager.OnGamePause += OnGamePause;
+        PauseManager.OnGameUnpause += OnGameUnpause;
+        BulletController.OnBulletCollidesEnemy += BulletHitEnemy;
     }
 
 
@@ -75,6 +77,31 @@ public class PlayerShooting : MonoBehaviour, IPauseableUpdate
 
         if (_reloadAction.IsPressed() && !_isReloading && _currentAmmo < _maxAmmo)
             _reloadCoroutine = StartCoroutine(Reload()); 
+
+
+
+    void OnGamePause()
+    {
+        foreach (BulletController bullet in _activeBullets)
+            bullet._rigidbody.linearVelocity = Vector2.zero;
+    }
+
+    void OnGameUnpause()
+    {
+        foreach (BulletController bullet in _activeBullets)
+            bullet._rigidbody.linearVelocity = bullet.transform.up * _bulletSpeed;
+    }
+
+
+
+    void BulletHitEnemy(BulletController bullet, Collider2D enemyCollider)
+    {
+        if (enemyCollider.TryGetComponent(out Melee_EnemyController enemy))
+        {
+            Melee_EnemyManager.Instance.DamageEnemy(enemy, _baseStats.BaseDamage);
+
+            _bulletPool.Release(bullet);
+        }
     }
 
 
@@ -128,6 +155,7 @@ public class PlayerShooting : MonoBehaviour, IPauseableUpdate
 
         bullet.transform.SetPositionAndRotation(_firePoint.position, _firePoint.rotation);
         bullet.gameObject.SetActive(true);
+        bullet._rigidbody.linearVelocity = bullet.transform.up * _bulletSpeed;
 
         StartCoroutine(BulletLifetime(bullet));
     }
@@ -135,6 +163,8 @@ public class PlayerShooting : MonoBehaviour, IPauseableUpdate
     void ReleaseBullet(BulletController bullet)
     {
         _activeBullets.Remove(bullet);
+
+        bullet._rigidbody.linearVelocity = Vector2.zero;
 
         bullet.gameObject.SetActive(false); 
     }
@@ -166,6 +196,8 @@ public class PlayerShooting : MonoBehaviour, IPauseableUpdate
     {
         UpdateManager.Instance.UnregisterFromUpdate(this);
 
-        //PauseManager.OnGamePause -= OnGamePause;
+        PauseManager.OnGamePause -= OnGamePause;
+        PauseManager.OnGameUnpause -= OnGameUnpause;
+        BulletController.OnBulletCollidesEnemy -= BulletHitEnemy;
     }
 }
