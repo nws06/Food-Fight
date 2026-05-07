@@ -171,7 +171,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 212f3dc1e9e800545ba4025b05e0764e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::BulletController
-  _baseStats: {fileID: 11400000, guid: 4b47cbf7aee17c941b403122ebb6f3e8, type: 2}
+  _rigidbody: {fileID: 5691910742779431341}
 --- !u!96 &2764614069874701583
 TrailRenderer:
   serializedVersion: 4
