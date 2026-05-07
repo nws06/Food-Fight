@@ -122,14 +122,6 @@ public class PlayerShooting : MonoBehaviour, IPauseableUpdate, IPauseableFixedUp
 
 
 
-    void OnGamePause()
-    {
-        foreach (BulletController bullet in _activeBullets)
-            bullet._rigidbody.linearVelocity = Vector2.zero;
-    }
-
-
-
     void Shoot()
     {
         _currentAmmo -= 1;      // TO BE CHANGED: MULTI-SHOT
@@ -181,8 +173,6 @@ public class PlayerShooting : MonoBehaviour, IPauseableUpdate, IPauseableFixedUp
         bullet.transform.SetPositionAndRotation(_firePoint.position, _firePoint.rotation);
         bullet.gameObject.SetActive(true);
         bullet._rigidbody.linearVelocity = bullet.transform.up * _bulletSpeed;
-
-        //StartCoroutine(BulletLifetime(bullet));
     }
 
     void ReleaseBullet(BulletController bullet)
@@ -199,21 +189,6 @@ public class PlayerShooting : MonoBehaviour, IPauseableUpdate, IPauseableFixedUp
         Destroy(bullet);
     }
     #endregion
-
-
-
-    IEnumerator BulletLifetime(BulletController bullet)
-    {
-        float elapsedTime = 0f;
-        while (elapsedTime < _bulletLifetime)
-        {
-            elapsedTime += Time.deltaTime;
-
-            yield return null;
-        }
-
-        _bulletPool.Release(bullet);
-    }
 
 
 
