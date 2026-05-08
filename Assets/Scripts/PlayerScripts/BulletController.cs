@@ -49,6 +49,9 @@ public class BulletController : MonoBehaviour
 
     void OnTriggerEnter2D(Collider2D otherCollider)
     {
+        if (!gameObject.activeInHierarchy)
+            return;
+        
         if (otherCollider.CompareTag("Enemy"))
         {
             OnBulletCollidesEnemy?.Invoke(this, otherCollider);
