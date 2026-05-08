@@ -26,7 +26,11 @@ public class ServiceLocatorInitializer : MonoBehaviour
     {
         DontDestroyOnLoad(this);
 
-        _playerStatManager = new PlayerStatManager(_baseStats, _allUpgradeData);
-        ServiceLocator.Register(_playerStatManager);
+        if (_playerStatManager == null)
+        {
+            _playerStatManager = new PlayerStatManager(_baseStats, _allUpgradeData);
+            ServiceLocator.Register(_playerStatManager);
+        }
+        
     }
 }
