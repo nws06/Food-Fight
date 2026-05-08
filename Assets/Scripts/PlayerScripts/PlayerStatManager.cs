@@ -1,40 +1,22 @@
 using System;
 using UnityEngine;
 
-public class PlayerStatManager : MonoBehaviour
+[System.Serializable]
+public class PlayerStatManager 
 {
-    public static PlayerStatManager Instance;
-
     public RuntimePlayerStats CurrentStats { get => _currentStats; }
 
     [SerializeField] private RuntimePlayerStats _currentStats;
     [SerializeField] private Upgrade[] _allUpgrades;
 
-    [Header("Assign these in inspector")]
-    [SerializeField] private PlayerBaseStats _baseStats;        // Assigned in inspector
-    [SerializeField] private UpgradeData[] _allUpgradeData;     // Assigned in inspector
-
-    
-
-    void Awake()
+    public PlayerStatManager(PlayerBaseStats baseStats, UpgradeData[] allUpgradeData)
     {
-        // Make singleton
-        if (Instance == null)
-            Instance = this;
-        else
-        {
-            Destroy(this);
-            return;
-        }
+        _currentStats = new RuntimePlayerStats(baseStats);
 
+        _allUpgrades = new Upgrade[allUpgradeData.Length];
 
-
-        _currentStats = new RuntimePlayerStats(_baseStats);
-
-        _allUpgrades = new Upgrade[_allUpgradeData.Length];
-
-        for (int i = 0; i < _allUpgradeData.Length; i++) {
-            _allUpgrades[i] = new Upgrade(_allUpgradeData[i]);
+        for (int i = 0; i < allUpgradeData.Length; i++) {
+            _allUpgrades[i] = new Upgrade(allUpgradeData[i]);
         }
 
         SortUpgrades();
@@ -42,9 +24,9 @@ public class PlayerStatManager : MonoBehaviour
 
 
 
-    public void ApplyUpgrade(Upgrade upgrade)
+    public void ApplyUpgrade(UpgradeType upgradeType)
     {
-        _currentStats.ApplyUpgrade(upgrade);
+        _currentStats.ApplyUpgrade(_allUpgrades[(int) upgradeType]);
     }
 
 
