@@ -746,6 +746,7 @@ GameObject:
   - component: {fileID: 1044882540}
   - component: {fileID: 1044882541}
   - component: {fileID: 1044882542}
+  - component: {fileID: 1044882543}
   m_Layer: 0
   m_Name: Player_CornCob
   m_TagString: Player
@@ -905,7 +906,16 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b5fdd43e0e86b5d4fb0257cd2caa12e9, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::PlayerMovement
-  _baseStats: {fileID: 11400000, guid: 4b47cbf7aee17c941b403122ebb6f3e8, type: 2}
+  _playerStats:
+    _baseStats: {fileID: 11400000, guid: 4b47cbf7aee17c941b403122ebb6f3e8, type: 2}
+    _moveSpeed: 0
+    _maxHealth: 0
+    _damage: 0
+    _reloadTime: 0
+    _shotCooldown: 0
+    _bulletSpeed: 0
+    _maxAmmo: 0
+    _bulletLifetime: 0
 --- !u!114 &1044882542
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -920,6 +930,40 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::PlayerShooting
   _baseStats: {fileID: 11400000, guid: 4b47cbf7aee17c941b403122ebb6f3e8, type: 2}
   _bulletManager: {fileID: 1923141118}
+--- !u!114 &1044882543
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1044882536}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 2a85e9ef014703b43aaf59ce064c78b0, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::PlayerUpgrades
+  _currentStats:
+    _baseStats: {fileID: 0}
+    _moveSpeed: 0
+    _maxHealth: 0
+    _damage: 0
+    _reloadTime: 0
+    _shotCooldown: 0
+    _bulletSpeed: 0
+    _maxAmmo: 0
+    _bulletLifetime: 0
+  _allUpgrades: []
+  _baseStats: {fileID: 11400000, guid: 4b47cbf7aee17c941b403122ebb6f3e8, type: 2}
+  _allUpgradeData:
+  - {fileID: 11400000, guid: 55b9a4e0796250c44a80d509c1bbbd82, type: 2}
+  - {fileID: 11400000, guid: 5ca72c7fa4703de4a9c67565beeec037, type: 2}
+  - {fileID: 11400000, guid: 45ab102c6376db44a8f20a3f26f04e32, type: 2}
+  - {fileID: 11400000, guid: 2fe537a31c6af5f498fd92513abe06e8, type: 2}
+  - {fileID: 11400000, guid: 366981ddf46bd474489fe6ba15a2c1f4, type: 2}
+  - {fileID: 11400000, guid: 387be1914296ec945abf29814122a118, type: 2}
+  - {fileID: 11400000, guid: 7dcf25452719b184b9c099e5634c2622, type: 2}
+  - {fileID: 11400000, guid: c5e8009f8d86c6346be0e7329821344c, type: 2}
+  - {fileID: 11400000, guid: d6ae1b0fe6cc3794aa08b154ffc806ae, type: 2}
 --- !u!1 &1823962693
 GameObject:
   m_ObjectHideFlags: 0
