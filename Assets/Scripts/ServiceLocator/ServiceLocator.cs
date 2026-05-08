@@ -25,6 +25,14 @@ public static class ServiceLocator
         throw new Exception($"ServiceLocator.cs: Service {typeof(T).Name} was not found.");
     }
 
+    public static T TryGet<T>() where T : class
+    {
+        if (_services.TryGetValue(typeof(T), out object service))
+            return service as T;
+        
+        return null;
+    }
+
 
 
     public static void Unregister<T>() where T : class
