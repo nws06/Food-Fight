@@ -4,7 +4,7 @@ using System.Collections.Generic;
 
 public class BulletManager : MonoBehaviour, IPauseableUpdate
 {
-    [SerializeField] private PlayerBaseStats _baseStats;
+    private PlayerStatManager _playerStats;
     [SerializeField] private Transform _firePoint;
     [SerializeField] private BulletController _bulletPrefab;
     private ObjectPool<BulletController> _bulletPool;
@@ -14,6 +14,8 @@ public class BulletManager : MonoBehaviour, IPauseableUpdate
 
     void Awake()
     {
+        _playerStats = ServiceLocator.Get<PlayerStatManager>();
+
         _bulletPool = new ObjectPool<BulletController>(
             createFunc: CreateBullet,
             actionOnGet: GetBullet,
@@ -42,7 +44,7 @@ public class BulletManager : MonoBehaviour, IPauseableUpdate
         {
             _activeBullets[i]._lifetime += deltaTime;
 
-            if (_activeBullets[i]._lifetime >= _baseStats.BaseBulletLifetime)
+            if (_activeBullets[i]._lifetime >= _playerStats.CurrentStats.BulletLifetime)
                 _bulletPool.Release(_activeBullets[i]);
         }
     }
@@ -65,7 +67,7 @@ public class BulletManager : MonoBehaviour, IPauseableUpdate
     void OnGameUnpause()
     {
         foreach (BulletController bullet in _activeBullets)
-            bullet.StartMovement(_baseStats.BaseBulletSpeed);
+            bullet.StartMovement(_playerStats.CurrentStats.BulletSpeed);
     }
 
 
@@ -74,7 +76,7 @@ public class BulletManager : MonoBehaviour, IPauseableUpdate
     {
         if (enemyCollider.TryGetComponent(out Melee_EnemyController enemy))
         {
-            Melee_EnemyManager.Instance.DamageEnemy(enemy, _baseStats.BaseDamage);
+            Melee_EnemyManager.Instance.DamageEnemy(enemy, _playerStats.CurrentStats.Damage);
 
             _bulletPool.Release(bullet);
         }
@@ -95,7 +97,7 @@ public class BulletManager : MonoBehaviour, IPauseableUpdate
     {
         _activeBullets.Add(bullet);
 
-        bullet.Initialize(_firePoint.position, _firePoint.rotation, _baseStats.BaseBulletSpeed);
+        bullet.Initialize(_firePoint.position, _firePoint.rotation, _playerStats.CurrentStats.BulletSpeed);
     }
 
     void ReleaseBullet(BulletController bullet)
