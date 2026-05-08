@@ -950,51 +950,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::PlayerShooting
   _baseStats: {fileID: 11400000, guid: 4b47cbf7aee17c941b403122ebb6f3e8, type: 2}
   _bulletManager: {fileID: 1923141118}
---- !u!1 &1281400791
-GameObject:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  serializedVersion: 6
-  m_Component:
-  - component: {fileID: 1281400793}
-  - component: {fileID: 1281400792}
-  m_Layer: 0
-  m_Name: DEBUG_PlayerStatsTesting
-  m_TagString: Untagged
-  m_Icon: {fileID: 0}
-  m_NavMeshLayer: 0
-  m_StaticEditorFlags: 2147483647
-  m_IsActive: 1
---- !u!114 &1281400792
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1281400791}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 2eeeb1bfde21354458b20ecf6b36b08a, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::DEBUG_PlayerStatsTesting
-  ud: {fileID: 11400000, guid: 5ca72c7fa4703de4a9c67565beeec037, type: 2}
---- !u!4 &1281400793
-Transform:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1281400791}
-  serializedVersion: 2
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
-  m_ConstrainProportionsScale: 0
-  m_Children: []
-  m_Father: {fileID: 0}
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &1823962693
 GameObject:
   m_ObjectHideFlags: 0
@@ -1145,7 +1100,7 @@ GameObject:
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
-  m_StaticEditorFlags: 2147483647
+  m_StaticEditorFlags: 0
   m_IsActive: 1
 --- !u!114 &1929403656
 MonoBehaviour:
@@ -1170,18 +1125,6 @@ MonoBehaviour:
   - {fileID: 11400000, guid: 7dcf25452719b184b9c099e5634c2622, type: 2}
   - {fileID: 11400000, guid: c5e8009f8d86c6346be0e7329821344c, type: 2}
   - {fileID: 11400000, guid: d6ae1b0fe6cc3794aa08b154ffc806ae, type: 2}
-  _playerStatManager:
-    _currentStats:
-      _baseStats: {fileID: 0}
-      _moveSpeed: 0
-      _maxHealth: 0
-      _damage: 0
-      _reloadTime: 0
-      _shotCooldown: 0
-      _bulletSpeed: 0
-      _maxAmmo: 0
-      _bulletLifetime: 0
-    _allUpgrades: []
 --- !u!4 &1929403657
 Transform:
   m_ObjectHideFlags: 0
@@ -1191,7 +1134,7 @@ Transform:
   m_GameObject: {fileID: 1929403655}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalPosition: {x: -0.46225, y: -0.27457, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -1213,4 +1156,3 @@ SceneRoots:
   - {fileID: 530707504}
   - {fileID: 1823962695}
   - {fileID: 1929403657}
-  - {fileID: 1281400793}
