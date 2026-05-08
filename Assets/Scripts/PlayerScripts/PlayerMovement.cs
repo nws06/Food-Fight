@@ -4,7 +4,6 @@ using UnityEngine.InputSystem;
 [RequireComponent(typeof(Rigidbody2D))]
 public class PlayerMovement : MonoBehaviour, IPauseableUpdate, IPauseableFixedUpdate
 {
-    [SerializeField] private PlayerBaseStats _baseStats;
     private float _speed;
     private float _rotation;
     private InputAction _movementAction; 
@@ -13,10 +12,10 @@ public class PlayerMovement : MonoBehaviour, IPauseableUpdate, IPauseableFixedUp
 
 
 
-    void Awake()
+    /*void Awake()
     {
         _speed = _baseStats.BaseMoveSpeed;
-    }
+    }*/
 
 
 
@@ -51,7 +50,7 @@ public class PlayerMovement : MonoBehaviour, IPauseableUpdate, IPauseableFixedUp
 
     public void OnPauseableFixedUpdate(float deltaTime)
     {
-        _rigidBody.linearVelocity = _speed * _movementDirection;
+        _rigidBody.linearVelocity = PlayerStatManager.Instance.CurrentStats.MoveSpeed * _movementDirection;
         _rigidBody.rotation = _rotation;
     }
 
