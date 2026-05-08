@@ -4,7 +4,7 @@ using System.Collections;
 
 public class PlayerShooting : MonoBehaviour, IPauseableUpdate
 {
-    [SerializeField] private PlayerBaseStats _baseStats;
+    private PlayerStatManager _playerStats;
     [SerializeField] private BulletManager _bulletManager;
     private bool _isReloading;
     private int _currentAmmo;
@@ -17,6 +17,8 @@ public class PlayerShooting : MonoBehaviour, IPauseableUpdate
 
     void Awake()
     {
+        _playerStats = ServiceLocator.Get<PlayerStatManager>();
+
         _shootAction = InputSystem.actions.FindAction("Attack");
         _reloadAction = InputSystem.actions.FindAction("Reload");
     }
@@ -30,7 +32,7 @@ public class PlayerShooting : MonoBehaviour, IPauseableUpdate
 
     public void OnPauseableUpdate(float deltaTime)
     {
-        if (_shootAction.IsPressed() && !_isReloading && Utils.IsOffCooldown(_lastShotTime, _baseStats.BaseShotCooldown))
+        if (_shootAction.IsPressed() && !_isReloading && Utils.IsOffCooldown(_lastShotTime, _playerStats.CurrentStats.ShotCooldown))
         {
             if (_currentAmmo > 0)
                 Shoot();
@@ -38,7 +40,7 @@ public class PlayerShooting : MonoBehaviour, IPauseableUpdate
                 _reloadCoroutine = StartCoroutine(Reload()); 
         }
 
-        if (_reloadAction.IsPressed() && !_isReloading && _currentAmmo < _baseStats.BaseMaxAmmo)
+        if (_reloadAction.IsPressed() && !_isReloading && _currentAmmo < _playerStats.CurrentStats.MaxAmmo)
             _reloadCoroutine = StartCoroutine(Reload()); 
     }
 
@@ -62,7 +64,7 @@ public class PlayerShooting : MonoBehaviour, IPauseableUpdate
         _isReloading = true;
 
         float elapsedTime = 0f;
-        while (elapsedTime < _baseStats.BaseReloadTime)
+        while (elapsedTime < _playerStats.CurrentStats.ReloadTime)
         {
             if (!PauseManager.isPaused)
                 elapsedTime += Time.deltaTime;
@@ -70,7 +72,7 @@ public class PlayerShooting : MonoBehaviour, IPauseableUpdate
             yield return null;
         }
 
-        _currentAmmo = _baseStats.BaseMaxAmmo;
+        _currentAmmo = _playerStats.CurrentStats.MaxAmmo;
 
         _isReloading = false;
         StopCoroutine(_reloadCoroutine);
