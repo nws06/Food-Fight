@@ -7,6 +7,7 @@ public class UpdateManager : MonoBehaviour
 
     private List<IPauseableUpdate> _updateList = new List<IPauseableUpdate>();
     private List<IPauseableFixedUpdate> _fixedUpdateList = new List<IPauseableFixedUpdate>();
+    private PauseService _pauseService;
     private float deltaTime;
 
 
@@ -19,6 +20,10 @@ public class UpdateManager : MonoBehaviour
         }
         Instance = this;
         DontDestroyOnLoad(gameObject);
+
+
+
+        _pauseService = ServiceLocator.TryGet<PauseService>();
     }
 
 
@@ -27,7 +32,7 @@ public class UpdateManager : MonoBehaviour
     {
         deltaTime = Time.deltaTime;
 
-        if (PauseManager.Instance == null || !PauseManager.isPaused)
+        if (_pauseService == null || !_pauseService.IsPaused)
         {
             foreach (IPauseableUpdate item in _updateList) 
                 item.OnPauseableUpdate(deltaTime);
@@ -38,7 +43,7 @@ public class UpdateManager : MonoBehaviour
     {
         deltaTime = Time.deltaTime;
 
-        if (PauseManager.Instance == null || !PauseManager.isPaused)
+        if (_pauseService == null || !_pauseService.IsPaused)
         {
             foreach (IPauseableFixedUpdate item in _fixedUpdateList) 
                 item.OnPauseableFixedUpdate(deltaTime);
