@@ -5,6 +5,7 @@ using System.Collections;
 public class PlayerShooting : MonoBehaviour, IPauseableUpdate
 {
     private PlayerStatManager _playerStats;
+    private PauseService _pauseService;
     [SerializeField] private BulletManager _bulletManager;
     private bool _isReloading;
     private int _currentAmmo;
@@ -18,6 +19,7 @@ public class PlayerShooting : MonoBehaviour, IPauseableUpdate
     void Awake()
     {
         _playerStats = ServiceLocator.Get<PlayerStatManager>();
+        _pauseService = ServiceLocator.TryGet<PauseService>();
 
         _shootAction = InputSystem.actions.FindAction("Attack");
         _reloadAction = InputSystem.actions.FindAction("Reload");
@@ -66,7 +68,7 @@ public class PlayerShooting : MonoBehaviour, IPauseableUpdate
         float elapsedTime = 0f;
         while (elapsedTime < _playerStats.CurrentStats.ReloadTime)
         {
-            if (!PauseManager.isPaused)
+            if (!_pauseService.IsPaused)
                 elapsedTime += Time.deltaTime;
 
             yield return null;

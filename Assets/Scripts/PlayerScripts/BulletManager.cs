@@ -5,6 +5,7 @@ using System.Collections.Generic;
 public class BulletManager : MonoBehaviour, IPauseableUpdate
 {
     private PlayerStatManager _playerStats;
+    private PauseService _pauseService;
     [SerializeField] private Transform _firePoint;
     [SerializeField] private BulletController _bulletPrefab;
     private ObjectPool<BulletController> _bulletPool;
@@ -15,6 +16,7 @@ public class BulletManager : MonoBehaviour, IPauseableUpdate
     void Awake()
     {
         _playerStats = ServiceLocator.Get<PlayerStatManager>();
+        _pauseService = ServiceLocator.TryGet<PauseService>();
 
         _bulletPool = new ObjectPool<BulletController>(
             createFunc: CreateBullet,
@@ -31,8 +33,8 @@ public class BulletManager : MonoBehaviour, IPauseableUpdate
     {
         UpdateManager.Instance.RegisterForUpdate(this);
 
-        PauseManager.OnGamePause += OnGamePause;
-        PauseManager.OnGameUnpause += OnGameUnpause;
+        _pauseService.OnGamePause += OnGamePause;
+        _pauseService.OnGameUnpause += OnGameUnpause;
         BulletController.OnBulletCollidesEnemy += BulletHitEnemy;
     }
 
@@ -119,8 +121,8 @@ public class BulletManager : MonoBehaviour, IPauseableUpdate
     {
         UpdateManager.Instance.UnregisterFromUpdate(this);
 
-        PauseManager.OnGamePause -= OnGamePause;
-        PauseManager.OnGameUnpause -= OnGameUnpause;
+        _pauseService.OnGamePause -= OnGamePause;
+        _pauseService.OnGameUnpause -= OnGameUnpause;
         BulletController.OnBulletCollidesEnemy -= BulletHitEnemy;
     }
 }

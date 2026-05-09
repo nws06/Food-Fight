@@ -5,6 +5,7 @@ using UnityEngine.InputSystem;
 public class PlayerMovement : MonoBehaviour, IPauseableUpdate, IPauseableFixedUpdate
 {
     private PlayerStatManager _playerStats;
+    private PauseService _pauseService;
     private float _speed;
     private float _rotation;
     private InputAction _movementAction; 
@@ -16,6 +17,7 @@ public class PlayerMovement : MonoBehaviour, IPauseableUpdate, IPauseableFixedUp
     void Awake()
     {
         _playerStats = ServiceLocator.Get<PlayerStatManager>();
+        _pauseService = ServiceLocator.TryGet<PauseService>();
     }
 
 
@@ -25,7 +27,7 @@ public class PlayerMovement : MonoBehaviour, IPauseableUpdate, IPauseableFixedUp
         UpdateManager.Instance.RegisterForUpdate(this);
         UpdateManager.Instance.RegisterForFixedUpdate(this);
 
-        PauseManager.OnGamePause += OnGamePause;
+        _pauseService.OnGamePause += OnGamePause;
 
         // Gather components 
         _movementAction = InputSystem.actions.FindAction("Move");
@@ -69,6 +71,6 @@ public class PlayerMovement : MonoBehaviour, IPauseableUpdate, IPauseableFixedUp
         UpdateManager.Instance.UnregisterFromUpdate(this);
         UpdateManager.Instance.UnregisterFromFixedUpdate(this);
 
-        PauseManager.OnGamePause -= OnGamePause;
+        _pauseService.OnGamePause -= OnGamePause;
     }
 }
