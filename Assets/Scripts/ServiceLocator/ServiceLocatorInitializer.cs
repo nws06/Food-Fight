@@ -18,19 +18,23 @@ public class ServiceLocatorInitializer : MonoBehaviour
     [SerializeField] private UpgradeData[] _allUpgradeData;
 
     [Header("DEBUG DETAILS -- DO NOT ASSIGN IN INSPECTOR")]
-    [SerializeField] private PlayerStatManager _playerStatManager;
+    [SerializeReference] private PlayerStatManager _playerStatManager;
+    [SerializeReference] private PauseService _pauseService;
 
 
 
     void Awake()
     {
-        DontDestroyOnLoad(this);
-
         if (_playerStatManager == null)
         {
             _playerStatManager = new PlayerStatManager(_baseStats, _allUpgradeData);
             ServiceLocator.Register(_playerStatManager);
         }
-        
+
+        if (_pauseService == null)
+        {
+            _pauseService = new PauseService();
+            ServiceLocator.Register(_pauseService);
+        }
     }
 }
