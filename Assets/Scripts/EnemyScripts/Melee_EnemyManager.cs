@@ -12,6 +12,7 @@ public class Melee_EnemyManager : MonoBehaviour, IPauseableUpdate, IPauseableFix
     [SerializeField] private PlayerBaseStats _playerBaseStats;
     [SerializeField] private float _minSpawnTime = 0.1f;
     [SerializeField] private float _maxSpawnTime = 2.0f;
+    private PauseService _pauseService;
 
     private float _nextSpawnTime = 0f;
     private Vector3 _spawnPosition = new Vector3(0f, 0f, -10f);
@@ -30,6 +31,8 @@ public class Melee_EnemyManager : MonoBehaviour, IPauseableUpdate, IPauseableFix
 
     void Awake()
     {
+        _pauseService = ServiceLocator.TryGet<PauseService>();
+
         if (Instance == null)
             Instance = this;
         else
@@ -50,7 +53,7 @@ public class Melee_EnemyManager : MonoBehaviour, IPauseableUpdate, IPauseableFix
 
     void OnEnable()
     {
-        PauseManager.OnGamePause += OnGamePause;
+        _pauseService.OnGamePause += OnGamePause;
     }
 
     void Start()
@@ -198,6 +201,6 @@ public class Melee_EnemyManager : MonoBehaviour, IPauseableUpdate, IPauseableFix
         UpdateManager.Instance.UnregisterFromUpdate(this);
         UpdateManager.Instance.UnregisterFromFixedUpdate(this);
 
-        PauseManager.OnGamePause -= OnGamePause;
+        _pauseService.OnGamePause -= OnGamePause;
     }
 }
