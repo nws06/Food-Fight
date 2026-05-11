@@ -1,8 +1,8 @@
 using System;
 using UnityEngine;
 
-[CreateAssetMenu(fileName = "Melee_EnemyBaseStats", menuName = "Scriptable Objects/Melee_EnemyBaseStats")]
-public class Melee_EnemyBaseStats : ScriptableObject
+[CreateAssetMenu(fileName = "MeleeEnemyBaseStats", menuName = "Scriptable Objects/MeleeEnemyBaseStats")]
+public class MeleeEnemyBaseStats : ScriptableObject
 {
     [SerializeField] private float _baseMoveSpeed;
     [SerializeField] private float _baseHealth;
