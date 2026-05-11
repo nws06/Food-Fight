@@ -130,11 +130,11 @@ GameObject:
   - component: {fileID: 324432}
   - component: {fileID: 324433}
   m_Layer: 0
-  m_Name: Melee_Enemy Manager
+  m_Name: Strawberry Manager
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
-  m_StaticEditorFlags: 2147483647
+  m_StaticEditorFlags: 0
   m_IsActive: 1
 --- !u!4 &324432
 Transform:
@@ -164,7 +164,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::Melee_EnemyManager
   _playerTransform: {fileID: 1044882537}
-  _enemyPrefab: {fileID: -5068085599327160568, guid: 1b3d6939d2497bc44a07575c4fd194db, type: 3}
+  _enemyPrefab: {fileID: 7486118123600996124, guid: 1b3d6939d2497bc44a07575c4fd194db, type: 3}
   _enemyBaseStats: {fileID: 11400000, guid: b7f5773836b8b7a429e28ebeb1ca43dd, type: 2}
   _playerBaseStats: {fileID: 11400000, guid: 4b47cbf7aee17c941b403122ebb6f3e8, type: 2}
   _minSpawnTime: 0.1
