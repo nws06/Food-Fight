@@ -2,13 +2,11 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Pool;
 
-public class Melee_EnemyManager : MonoBehaviour, IPauseableUpdate, IPauseableFixedUpdate
+public class StrawberryManager : MonoBehaviour, IPauseableUpdate, IPauseableFixedUpdate
 {
-    public static Melee_EnemyManager Instance;
-
     [SerializeField] private Transform _playerTransform;
-    [SerializeField] private Melee_EnemyController _enemyPrefab;
-    [SerializeField] private Melee_EnemyBaseStats _enemyBaseStats;
+    [SerializeField] private StrawberryController _enemyPrefab;
+    [SerializeField] private MeleeEnemyBaseStats _enemyBaseStats;
     [SerializeField] private PlayerBaseStats _playerBaseStats;
     [SerializeField] private float _minSpawnTime = 0.1f;
     [SerializeField] private float _maxSpawnTime = 2.0f;
@@ -19,28 +17,22 @@ public class Melee_EnemyManager : MonoBehaviour, IPauseableUpdate, IPauseableFix
 
     private float _randomXPosition;
     private float _randomYPosition;
-    private Vector3 _randomPosition;
+    private Vector2 _randomPosition;
     private float _randomSize;
 
     private Vector2 _faceDirection;
+    private float _rotation;
 
-    private ObjectPool<Melee_EnemyController> _enemyPool;
-    private List<Melee_EnemyController> _activeEnemies = new List<Melee_EnemyController>();
+    private ObjectPool<IEnemy> _enemyPool;
+    private List<IEnemy> _activeEnemies = new List<IEnemy>();
 
 
 
     void Awake()
     {
         _pauseService = ServiceLocator.TryGet<PauseService>();
-
-        if (Instance == null)
-            Instance = this;
-        else
-            Destroy(this);
-
-
             
-        _enemyPool = new ObjectPool<Melee_EnemyController>(
+        _enemyPool = new ObjectPool<IEnemy>(
             createFunc: CreateEnemy,
             actionOnGet: GetEnemy,
             actionOnRelease: ReleaseEnemy,
@@ -78,50 +70,57 @@ public class Melee_EnemyManager : MonoBehaviour, IPauseableUpdate, IPauseableFix
 
     public void OnPauseableFixedUpdate(float deltaTime)
     {
-        foreach (Melee_EnemyController enemy in _activeEnemies)
+        foreach (IEnemy enemy in _activeEnemies)
         {
-            RotateEnemy(enemy);
-            MoveEnemy(enemy);
+            RotateAndMoveEnemyTowardPlayer(enemy);
         }
     }
 
 
 
-    void RotateEnemy(Melee_EnemyController enemy)
+    void RotateAndMoveEnemyTowardPlayer(IEnemy enemy)
     {
-        _faceDirection = (Vector2)_playerTransform.position - enemy._rigidbody.position;
-        enemy._rigidbody.rotation = Mathf.Atan2(_faceDirection.y, _faceDirection.x) * Mathf.Rad2Deg - 90f;
+        _faceDirection = (Vector2) _playerTransform.position - enemy.EnemyRigidbody.position;
+        _rotation = Mathf.Atan2(_faceDirection.y, _faceDirection.x) * Mathf.Rad2Deg - 90f;
+
+        enemy.EnemyRigidbody.rotation = _rotation;
+        enemy.SetMovement(_enemyBaseStats.BaseMoveSpeed);
     }
 
-    void MoveEnemy(Melee_EnemyController enemy)
+
+
+    /*void RotateEnemy(IEnemy enemy)
     {
-        enemy._rigidbody.linearVelocity = enemy._rigidbody.transform.up * _enemyBaseStats.BaseMoveSpeed;
+        _faceDirection = (Vector2)_playerTransform.position - enemy.EnemyRigidbody.position;
+        enemy.EnemyRigidbody.rotation = Mathf.Atan2(_faceDirection.y, _faceDirection.x) * Mathf.Rad2Deg - 90f;
+    }
+
+    void MoveEnemy(IEnemy enemy)
+    {
+        enemy.EnemyRigidbody.linearVelocity = enemy.EnemyRigidbody.transform.up * _enemyBaseStats.BaseMoveSpeed;
     }
 
 
 
-    public void DamageEnemy(Melee_EnemyController enemy, float damage)
+    public void DamageEnemy(IEnemy enemy, float damage)
     {
-        enemy._currentHp -= damage;
-
-        if (enemy._currentHp <= 0)
-            KillEnemy(enemy);
+        enemy.Damage(damage);
     }
 
-    void KillEnemy(Melee_EnemyController enemy)
+    void KillEnemy(IEnemy enemy)
     {
         // Death animation
         // Spawn XP
 
         _enemyPool.Release(enemy);
-    }
+    }*/
 
 
 
     void OnGamePause()
     {
-        foreach (Melee_EnemyController enemy in _activeEnemies)
-            enemy._rigidbody.linearVelocity = Vector2.zero;
+        foreach (IEnemy enemy in _activeEnemies)
+            enemy.EnemyRigidbody.linearVelocity = Vector2.zero;
     }
 
 
@@ -131,7 +130,7 @@ public class Melee_EnemyManager : MonoBehaviour, IPauseableUpdate, IPauseableFix
     /// between 80 and 120 units away on the x axis <br />
     /// between 25 and 75 units away on the y axis 
     /// </summary>
-    void RandomizeLocation(GameObject enemy)
+    Vector2 RandomLocation()
     {
         // X position: 
         _randomXPosition = (Random.Range(0, 2) * 2 - 1) * Random.Range(0f, 30f);
@@ -143,54 +142,52 @@ public class Melee_EnemyManager : MonoBehaviour, IPauseableUpdate, IPauseableFix
         _randomYPosition = (_randomYPosition >= 0) ? _randomYPosition + 50 : _randomYPosition - 50;
         _randomYPosition += _playerTransform.position.y;
 
-        _randomPosition = new Vector3(_randomXPosition, _randomYPosition, 0f);
+        _randomPosition = new Vector2(_randomXPosition, _randomYPosition);
 
-        enemy.transform.position = _randomPosition;
+        print(_randomPosition);
+        return _randomPosition;
     }
 
 
 
-    void RandomizeSize(GameObject enemy)
+    float RandomSize()
     {
         _randomSize = Random.Range(_enemyBaseStats.MinSize, _enemyBaseStats.MaxSize);
-        enemy.transform.localScale = new Vector3(_randomSize, _randomSize, _randomSize);
+
+        return _randomSize;
     }
 
 
 
+    // FIX THIS STUFF UPP!!!
+    // MAKE RESETTING CLEANER ETC ETC
     #region _enemyPool
-    Melee_EnemyController CreateEnemy()
+    IEnemy CreateEnemy()
     {
-        Melee_EnemyController newEnemy = Instantiate(_enemyPrefab, _spawnPosition, Quaternion.identity, transform);
-        newEnemy.gameObject.SetActive(false);
-        newEnemy.name = "Pooled Melee Strawberry";
+        IEnemy newEnemy = Instantiate(_enemyPrefab);
+        newEnemy.Reset();
+        newEnemy.OnDeath += (e) => _enemyPool.Release(e);
         return newEnemy;
     }
 
-    void GetEnemy(Melee_EnemyController enemy)
+    void GetEnemy(IEnemy enemy)
     {
         _activeEnemies.Add(enemy);
 
-        RandomizeLocation(enemy.gameObject);
-        RandomizeSize(enemy.gameObject);
-
-        enemy._currentHp = _enemyBaseStats.BaseHealth;
-
-        enemy.gameObject.SetActive(true);
+        enemy.Spawn(RandomLocation(), 0f, transform, _enemyBaseStats.BaseHealth, RandomSize());
     }
 
-    void ReleaseEnemy(Melee_EnemyController enemy)
+    void ReleaseEnemy(IEnemy enemy)
     {
         _activeEnemies.Remove(enemy);
 
-        enemy._currentHp = 0;
-
-        enemy.gameObject.SetActive(false);
+        enemy.Reset();
     }
 
-    void DestroyEnemy(Melee_EnemyController enemy)
+    void DestroyEnemy(IEnemy enemy)
     {
-        Destroy(enemy);
+        enemy.OnDeath = null;
+        enemy.Destroy();
     }
     #endregion
 
