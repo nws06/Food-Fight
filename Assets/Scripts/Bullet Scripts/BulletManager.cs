@@ -76,9 +76,9 @@ public class BulletManager : MonoBehaviour, IPauseableUpdate
 
     void BulletHitEnemy(BulletController bullet, Collider2D enemyCollider)
     {
-        if (enemyCollider.TryGetComponent(out Melee_EnemyController enemy))
+        if (enemyCollider.TryGetComponent(out IEnemy enemy))
         {
-            Melee_EnemyManager.Instance.DamageEnemy(enemy, _playerStats.CurrentStats.Damage);
+            enemy.Damage(_playerStats.CurrentStats.Damage);
 
             _bulletPool.Release(bullet);
         }
